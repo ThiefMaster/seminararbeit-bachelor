@@ -1,6 +1,55 @@
 \chapter{SQLAlchemy}
 
-\section{Allgemeines/Überblick}
+\section{Allgemeines}
+
+SQLAlchemy\footnote{\href{http://www.sqlalchemy.org}{http://www.sqlalchemy.org}}
+ist nicht nur ein ORM-System sondern eine Datenbankabstraktionsebene die auch
+ORM kann - man kann es auch problemlos nutzen ohne auch nur ein einziges Objekt
+zu mappen.
+
+Das Framework besteht aus drei großen Modulen: \textbf{Dialects}, \textbf{Core}
+und \textbf{ORM}.
+
+Das \textbf{Dialects}-Modul ist dafür zuständig, auf die verschiedenen
+Datenbanksysteme zuzugreifen - eine vollständige Liste der Datenbanksysteme und
+der verschiedenen APIs (für MSSQL\footnote{Microsoft SQL Server} gibt es
+beispielsweise 5 verschiedene APIs) findet man in der
+\href{http://www.sqlalchemy.org/docs/core/engines.html#supported-dbapis}
+{SQLAlchemy-Dokumentation}. Er abstrahiert also den Zugriff auf die
+verschiedenen Datenbanken vollständig, sodass anders als bei Pythons BB-API
+abgesehen von den Verbindungsdaten keine unterschiedlichen Funktionsparameter
+notwendig sind. Eine weitere Aufgabe des \emph{Dialects}-Moduls ist die
+Abstraktion der Spaltentypen - die meisten Datenbanksystemen haben zusätzliche
+Typen die nicht standardisiert sind; so hat PostgreSQL beispielsweise den
+\emph{INET}-Datentyp um IP-Adressen zu speichern - dieser wird durch
+\texttt{postgresql.INET} aus \texttt{sqlalchemy.dialects} repräsentiert.
+
+Das \textbf{Core}-Modul enthält alle nicht-ORM-bezogenen Funktionen von
+SQLAlchemy. Dazu gehört insbesondere die \emph{SQL Expression Language}, die dem
+Entwickler ermöglicht, SQL zu erzeugen ohne selbst SQL zu schreiben, indem sie
+die Bestandteile von SQL durch datenbanksystemunabhängige Python-Konstrukte
+repräsentiert. Dabei ist es sowohl möglich, nur die Python-Konstrukte zu
+benutzen oder einen String mit einer SQL-Abfrage zu übergeben, als auch beides
+zu kombinieren. Die beiden letzteren Methoden sind allerdings u.U. nicht mehr
+mit allen Datenbanksystemen kompatibel da man nicht ausschließlich die
+Abstraktion benutzt sondern (teilweise) selbst SQL-Abfragen schreibt. Ein
+weiterer wichtiger Teil vom \emph{Core} ist der Verbindungsaufbau anhand eines
+Connectionstrings, der alle benötigten Daten einschließlich Datenbanksystem und
+-API enthält. Ebenfalls vom \emph{Core} zur Verfügung gestellt wird der
+Connection-Pool, der bereits aufgebaute Datenbankverbindungen enthält sodass
+eine Applikation schnell an eine Verbindung kommt ohne erst eine neue Verbindung
+aufbauen zu müssen, was je nach Datenbanksystem ein relativ "teurer" Prozess
+ist.
+
+
+Das dritte und wichtigste Modul ist das \textbf{ORM}-Modul. Im Gegensatz zum
+Lowlevel-Zugriff den die \emph{SQL Expression Language} bietet ist das ORM auf
+einer hohen Ebene angesiedelt und bietet eine starke Abstraktion. Dazu bietet es
+verschiedene Möglichkeiten, Datenbanktabellen und Objekte miteinander zu
+verbinden - zum einen den \emph{mapper} umd zum anderen die \emph{declarative
+syntax.}. \todotext{noch was zu ORM damit das nicht kürzer als die beiden
+anderen teile ist}
+
 
 \section{Datenbankdefinition}
 \subsection{Standardsyntax}
