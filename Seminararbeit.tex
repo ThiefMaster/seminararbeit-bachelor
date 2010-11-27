@@ -1,0 +1,225 @@
+\documentclass[fontsize=12pt,a4paper,headinclude,oneside,halfparskip,pdftex,pointlessnumbers,plainheadsepline]{scrreprt} % headinclude
+\usepackage[automark]{scrpage2}
+\typearea[2mm]{15}
+% Schriften
+%\usepackage{lmodern}
+\usepackage{mathpazo} % Palatino für Mathemodus
+\usepackage{courier}
+\usepackage{amsmath,marvosym} % Mathesachen
+\usepackage{setspace} % 1,5 Zeilenabstand
+\onehalfspacing
+\usepackage[T1]{fontenc} % Ligaturen, richtige Umlaute im PDF
+\usepackage[utf8]{inputenc} % latin1-Kodierung für Umlaute
+\usepackage{ngerman} % neue deutsche Rechtschreibung
+\usepackage[ngerman]{babel} % Silbentrennung
+\clubpenalty = 10000 % Schusterjungen vermeiden
+\widowpenalty = 10000 % Hurenkinder vermeiden
+\displaywidowpenalty = 10000 % und nochmal für Formeln
+% PDF
+\usepackage[plainpages=false,ngerman,pdfpagelabels=true,bookmarks=true,
+bookmarksopen=true,colorlinks=true,linkcolor=blue,pdfauthor={Adrian Mönnich},
+pdftitle={ORM mit SQLAlchemy}]{hyperref}
+% \usepackage{pdflscape} % einzelne Seiten drehen können
+\usepackage{microtype} % spezielle PDF-mikro-typographische Optimierungen
+\newcommand{\subfigureautorefname}{\figurename} % um \autoref auch für subfigures benutzen
+\usepackage{url}
+% Tabellen
+\usepackage{multirow} % Tabellen-Zellen über mehrere Zeilen
+\usepackage{multicol} % mehre Spalten auf eine Seite
+\usepackage{tabularx} % Für Tabellen mit vorgegeben Größen
+\usepackage{array}
+\usepackage{float}
+%  Biblio
+%\usepackage{natbib}%\usepackage[round]{natbib}
+%\usepackage{bibgerm} % Umlaute in BibTeX
+% Bilder
+\usepackage{graphicx} % Bilder
+\usepackage{color} % Farben
+%\usepackage[sf,SF]{subfigure} % mehrere Abbildungen nebeneinander/übereinander
+\usepackage{subfigure} % mehrere Abbildungen nebeneinander/übereinander
+%\usepackage[width=0.8\textwidth,font=small,labelfont={sf,bf},textfont=sf]{caption} % Beschreibungen
+\usepackage[width=0.8\textwidth,font=small,labelfont={bf}]{caption} % Beschreibungen
+%\usepackage{ifthen} % für Bedingen, hier bei \newcommands benötigt
+
+% Quellcode
+\usepackage{listings} % für Formatierung in Quelltexten
+%\usepackage{minted}
+%\usemintedstyle{default}
+%\renewcommand{\theFancyVerbLine}{\sffamily\textcolor[rgb]{0.5,0.5,0.5}{\scriptsize\arabic{FancyVerbLine}}}
+%\newmintedfile{python}{linenos,numbersep=5pt,frame=lines,framesep=2mm}
+%\newminted{python}{linenos,numbersep=5pt,frame=lines,framesep=2mm}
+%\def\listingautorefname{Listing}
+
+\definecolor{codebg}{rgb}{0.98,0.98,0.98}
+\lstset{
+  language=Python,                % choose the language of the code
+  basicstyle=\small,       % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\small,      % the size of the fonts that are used for the line-numbers
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{codebg} ,% choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=lines,                    % adds a frame around the code
+  framesep=2mm,
+  tabsize=4,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=true,         % sets if automatic breaks should only happen at whitespace
+  numberbychapter=false,
+  aboveskip=0.75cm,
+  belowskip=0.5cm,
+  inputencoding=latin1
+}
+\lstset{literate=
+  {Ö}{{\"O}}1
+  {Ä}{{\"A}}1
+  {Ü}{{\"U}}1
+  {ß}{{\ss}}2
+  {ü}{{\"u}}1
+  {ä}{{\"a}}1
+  {ö}{{\"o}}1
+}
+
+% für autoref von Gleichungen in itemitemize-Umgebeungen
+\makeatletter
+\newcommand{\saved@equation}{}
+\let\saved@equation\equation
+\def\equation{\@hyper@itemfalse\saved@equation}
+\makeatother
+
+
+%\setcaphanging
+% linksbündige Fußboten
+\deffootnote{1.5em}{1em}{\makebox[1.5em][l]{\thefootnotemark}}
+
+% Standardschrift für Überschriften
+\setkomafont{sectioning}{\normalfont\normalcolor\bfseries}
+\setkomafont{pagehead}{\normalfont\normalcolor\small}
+\setkomafont{descriptionlabel}{\normalfont\normalcolor\bfseries}
+%\setkomafont{pagehead}{\normalfont\normalcolor\small\sffamily}
+%\setkomafont{section}{\normalfont\normalcolor\Large\bfseries}
+%\setkomafont{subsection}{\normalfont\normalcolor\large\bfseries}
+%\addtokomafont{caption}{\normalfont\normalcolor\small\sffamily}
+
+
+%\setcounter{tocdepth}{2}
+
+% Eigene Befehle %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\newcommand{\todotext}[1]{
+      {\color{red} TODO: #1} \normalfont
+}
+% Hinweis auf Programme in Datei
+\newcommand{\datei}[1]{
+      {\ttfamily{#1}}
+}
+\newcommand{\code}[1]{
+      {\ttfamily{#1}}
+}
+% bild mit defnierter Breite einfügen
+\newcommand{\bild}[4]{
+  \begin{figure}[!hbt]
+    %\begin{center}
+    \centering
+      \vspace{1ex}
+      \includegraphics[width=#2]{images/#1}
+      \caption[#4]{\label{img.#1} #3}
+    %\end{center}
+    \vspace{1ex}
+  \end{figure}
+}
+% bild mit eigener Breite
+\newcommand{\bilda}[3]{
+  \begin{figure}[!hbt]
+    %\begin{center}
+    \centering
+      \vspace{1ex}
+      \includegraphics{images/#1}
+      \caption[#3]{\label{img.#1} #2}
+      \vspace{1ex}
+    %\end{center}
+  \end{figure}
+}
+
+% Trennsachen
+% \hyphenation{Tra-jektorien}
+
+
+% hier beginnt der eigentliche Inhalt %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+%\pagenumbering{Roman} % große Römische Seitenummerierung
+\pagestyle{empty}
+
+% Titelseite %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearscrheadings\clearscrplain
+
+
+\begin{center}
+\begin{Huge}
+Hochschule Karlsruhe\\
+\vspace{3mm}
+\end{Huge}{\Large Fakultät für Informatik}\\
+
+\vspace{20mm}
+\begin{Large}
+ORM mit SQLAlchemy\\
+\end{Large}
+\vspace{8mm}
+Seminararbeit\\
+Wintersemester 2010/11\\
+\vspace{0.4cm}
+\vspace{2 cm}
+Adrian Mönnich \\
+Matrikel-Nummer 29189\\
+\vspace{8cm}
+\begin{tabular}{ll}
+{\bf Betreuer} & Prof. Klaus Gremminger\\
+\end{tabular}
+
+\end{center}
+\clearpage
+
+
+
+
+
+%% Kopfzeile %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{scrheadings}
+\clearscrheadings\clearscrplain
+\setheadwidth{text}
+\setheadsepline{.4pt}
+\automark{chapter}
+\ihead[\headmark]{\headmark}
+\ohead[\pagemark]{\pagemark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\addtocontents{toc}{\protect\thispagestyle{empty}}
+\tableofcontents
+%\listoffigures \addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+%\listoftables \addcontentsline{toc}{chapter}{Tabellenverzeichnis}
+
+%\chapter*{Symbolverzeichnis}\label{s.sym}
+%\addcontentsline{toc}{chapter}{Symbolverzeichnis}
+%\markboth{Symbolverzeichnis}{Symbolverzeichnis}
+%\section*{Allgemeine Symbole}\label{s.sym.alg}
+%\begin{flushleft}\begin{tabularx}{\textwidth}{l|X}
+%Symbol & Bedeutung\\\hline
+%$a$ & der Skalar $a$ \\
+%$\vec{x}$ & der Vektor $\vec{x}$\\
+%$\mat{A}$ & die Matrix $\mat{A}$\\
+%\end{tabularx}\end{flushleft}
+
+\newpage
+\setcounter{page}{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{01_Grundlagen}
+\include{02_SQLAlchemy}
+\include{03_SQLAlchemy_Beispiel}
+\include{04_Ausblick}
+\clearpage
+\end{document}
