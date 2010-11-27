@@ -94,8 +94,9 @@ schreiben.
 \autoref{lst:dbapi} zeigt Python-Code, der über die DB-API sowohl aus
 einer SQLite-Datenbank als auch aus einer PostgreSQL-Datenbank Daten ausliest.
 Man sieht schnell, dass zwar die API selbst für beide Datenbanksysteme identisch
-ist, die Funktionsparameter jedoch nicht: Während \emph{psycopg} \textbf{\%s}
-als Platzhalter erwartet, benötigt \emph{sqlite3} \textbf{?} als Platzhalter.
+ist, die Funktionsparameter jedoch nicht: Während \emph{psycopg}
+\textbf{\texttt{\%s}} als Platzhalter erwartet, benötigt \emph{sqlite3}
+\textbf{\texttt{?}} als Platzhalter.
 
 \lstinputlisting[language=Python,label=lst:dbapi,caption=Datenbankzugriff via
 DB-API]{code/python-dbapi.py}
