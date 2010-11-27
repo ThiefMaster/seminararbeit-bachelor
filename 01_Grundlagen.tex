@@ -91,14 +91,14 @@ Allerdings dient diese API nur dem Zugriff auf die Datenbank sodass man selbst
 dafür verantwortlich ist, mit der genutzten Datenbank kompatibles SQL zu
 schreiben.
 
-\lstinputlisting[language=Python,label=lst:dbapi,caption=Datenbankzugriff via
-DB-API]{code/python-dbapi.py}
-
 \autoref{lst:dbapi} zeigt Python-Code, der über die DB-API sowohl aus
 einer SQLite-Datenbank als auch aus einer PostgreSQL-Datenbank Daten ausliest.
 Man sieht schnell, dass zwar die API selbst für beide Datenbanksysteme identisch
 ist, die Funktionsparameter jedoch nicht: Während \emph{psycopg} \textbf{\%s}
 als Platzhalter erwartet, benötigt \emph{sqlite3} \textbf{?} als Platzhalter.
+
+\lstinputlisting[language=Python,label=lst:dbapi,caption=Datenbankzugriff via
+DB-API]{code/python-dbapi.py}
 
 Wenn man jedoch sowieso nur ein einziges Datenbanksystem benutzt und auch nicht
 viele Datenbankoperationen benötigt ist die DB-API jedoch oft ausreichend:
