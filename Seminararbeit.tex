@@ -106,6 +106,10 @@ pdftitle={ORM mit SQLAlchemy}]{hyperref}
 
 %\setcounter{tocdepth}{2}
 
+\usepackage{chngcntr}
+\counterwithout{figure}{chapter}
+
+
 % Eigene Befehle %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 \newcommand{\todotext}[1]{
       {\color{red} TODO: #1} \normalfont
@@ -117,7 +121,7 @@ pdftitle={ORM mit SQLAlchemy}]{hyperref}
 \newcommand{\code}[1]{
       {\ttfamily{#1}}
 }
-% bild mit defnierter Breite einfügen
+% bild mit definierter Breite einfügen
 \newcommand{\bild}[4]{
   \begin{figure}[!hbt]
     %\begin{center}
