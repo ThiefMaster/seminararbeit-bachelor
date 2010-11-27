@@ -62,10 +62,14 @@ Ein anderer klarer Vorteil eines ORM-Systems ist dass man sich um SQL Injection
 \footnote{Ausnutzung einer Sicherheitslücke die entsteht, wenn ein regulärer
 Benutzer SQL-Abfragen so manipulieren kann, dass sie nicht die gewünsche
 Funktion haben sondern eine, die dem Benutzer ungewollte Vorteile verschafft
-oder Daten zerstört.} keine Gedanken machen muss: Wenn das ORM-System Abfragen
+oder Daten zerstört - siehe auch \autoref{img.exploits-of-a-mom.png}.} keine
+Gedanken machen muss: Wenn das ORM-System Abfragen
 generiert benutzt es entweder eine Datenbank-API bei der Benutzerdaten und
 SQL-Abfrage separat übertragen werden oder aber es escaped Sonderzeichen in den
 Benutzerdaten, die die SQL-Abfrage verändern würden.
+
+\bild{exploits-of-a-mom.png}{\textwidth}{SQL Injection}{SQL Injection (von
+www.xkcd.com)}
 
 Ein weiterer Punkt, der sowohl Vor- als auch Nachteil ist, ist die zusätzliche
 Ebene zwischen dem eigentlichen Programm und der Datenbank (bzw. dem
