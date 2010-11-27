@@ -1,6 +1,3 @@
-import psycopg2
-import sqlite3
-
 def get_author(cursor, quote_char, name):
     cursor.execute("SELECT id, name FROM authors WHERE name = " +
         quote_char, (name,))
