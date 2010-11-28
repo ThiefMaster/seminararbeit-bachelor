@@ -106,12 +106,45 @@ Ebenfalls in der Tabellendefinition enthalten sind Fremdschlüssel, die mit dem
 \lstinputlisting[language=Python,label=lst:dbdef-mapper-tables,lastline=30,
 caption=Definition der Tabellen]{code/sqlalchemy-def-mapper.py}
 
-\todotext{Klassendefinition - \autoref{lst:dbdef-mapper-classes}}
+In \autoref{lst:dbdef-mapper-classes} werden die Klassen für das Mapping
+definiert. Bei diesen Klassen handelt es sich um POPOs\footnote{Plain Old Python
+Objects}, die nur von \texttt{object} erben und auch keine anderen Bedingungen
+erfüllen müssen - eine komplett leere Klasse reicht bereits aus. Zum Testen und
+Debuggen ist es jedoch sinnvoll, die \texttt{\_\_repr\_\_}-Methode zu
+implementieren, sodass \texttt{print instanz\_der\_klasse} brauchbare
+Informationen anstelle der Speicheradresse ausgibt. Im Beispielcode werden dazu
+einfach der Klassename und sowohl die ID als auch die aussagekräftigste Spalte
+(Name, Titel, Tagname) verwendet. In einem realen Projekt wäre es darüberhinaus
+sinnvoll einen Konstruktor zu erstellen, der häufig genutzten Feldern einen Wert
+zuweist, sodass man z.B. \texttt{jquery\_tag = Tag('jquery')} schreiben kann.
 
 \lstinputlisting[language=Python,label=lst:dbdef-mapper-classes,firstline=32,
 lastline=43,caption=Definition der Klassen]{code/sqlalchemy-def-mapper.py}
 
-\todotext{Mapping - \autoref{lst:dbdef-mapper-mapping}}
+Nachdem Tabellen und Klassen definiert sind müssen sie miteinander verknüpft
+werden - bisher sind die Klassen relativ nutzlos.
+\autoref{lst:dbdef-mapper-mapping} zeigt den dafür notwendigen Code. Die
+\texttt{mapper()}-Funktion nimmt als Argumente als erstes die zu mappende Klasse
+und als zweites die dazugehörige Tabelle. Relationen zwischen Tabellen werden
+über den \texttt{properties}-Parameter und die \texttt{relationship()}-Funktion
+definiert. Diese Funktion benötigt als ersten Parameter das Ziel der Relation.
+Um auch vom Zielobjekt aus auf die Relation zugreifen zu können kann man über
+den \texttt{backref}-Parameter den Feldnamen angeben, unter dem sie dort
+verfügbar sein soll. Sofern man die \emph{backref} konfigurieren will, gibt
+man statt eines Strings den Rückgabewert der \texttt{backref()}-Funktion an, die
+als ersten Parameter den Feldnamen und danach diverse Konfigurationsparameter
+erwartet. Der wohl wichtigste Parameter sowohl von \texttt{relationship()} als
+auch \texttt{backref()} ist \texttt{lazy}: Er gibt an, zu welchem Zeitpunkt die
+Daten der Relation geladen werden sollen. Standard ist \texttt{True}, was
+bedeutet, dass eine SQL-Abfrage abgeschickt wird sobald auf die Relation
+zugegriffen wird. Wenn man \texttt{lazy=False} setzt wird die Query, die die
+Daten des Objektes selbst lädt, um einen \emph{JOIN} erweitert, sodass beim
+Zugriff auf die Relation keine weitere Abfrage mehr notwendig ist - im Beispiel
+wurde \texttt{Tag.books} auf \emph{eager loading} (\texttt{lazy=False}) gesetzt,
+da es anzunehmen ist, dass man nicht nur ein Tag laden will sondern auch die
+Bücher, die dieses Tag haben. Der letzte wichtige Parameter ist
+\texttt{secondary} und wird für \emph{Many-To-Many}-Relationen benutzt, um die
+Assoziationstabelle anzugeben.
 
 \lstinputlisting[language=Python,label=lst:dbdef-mapper-mapping,firstline=45,
 lastline=52,caption=Mapping der Tabellen auf die
