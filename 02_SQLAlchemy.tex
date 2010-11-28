@@ -76,8 +76,8 @@ tag \texttt{VARCHAR UNIQUE NOT NULL}
 
 \ul{Fremdschl\"ussel-Beziehungen:}\\
 books.author\_id $\rightarrow$ authors.id\\
-tags2books.tag\_id -> tags.id\\
-tags2books.author\_id -> authors.id
+tags2books.tag\_id $\rightarrow$ tags.id\\
+tags2books.author\_id $\rightarrow$ authors.id
 
 Bei den Primärschlüsseln in \emph{authors}, \emph{books} und \emph{tags} sollen
 darüberhinaus automatisch generierte IDs benutzt werden.
