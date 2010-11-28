@@ -4,7 +4,7 @@ metadata = sqlalchemy.MetaData()
 # Tabellen definieren
 authors_table = Table('authors', metadata,
     Column('id', Integer, primary_key=True),
-    Column('name', String, nullable=False)
+    Column('name', String, nullable=False, index=True)
 )
 
 books_table = Table('books', metadata,
@@ -12,12 +12,12 @@ books_table = Table('books', metadata,
     Column('author_id', Integer,
         ForeignKey('authors.id', onupdate='CASCADE', ondelete='CASCADE'),
         nullable=False),
-    Column('title', String, nullable=False)
+    Column('title', String, nullable=False, index=True)
 )
 
 tags_table = Table('tags', metadata,
     Column('id', Integer, primary_key=True),
-    Column('tag', String, unique=True, nullable=False)
+    Column('tag', String, index=True, unique=True, nullable=False)
 )
 
 tags2books_table = Table('tags2books', metadata,
