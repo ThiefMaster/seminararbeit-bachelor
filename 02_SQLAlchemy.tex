@@ -79,10 +79,44 @@ books.author\_id $\rightarrow$ authors.id\\
 tags2books.tag\_id -> tags.id\\
 tags2books.author\_id -> authors.id
 
+Bei den Primärschlüsseln in \emph{authors}, \emph{books} und \emph{tags} sollen
+darüberhinaus automatisch generierte IDs benutzt werden.
+
 \subsection{mapper()-Syntax}
 
-\lstinputlisting[language=Python,label=lst:dbdef-mapper,
-caption=Datenbankdefinition mit mapper()]{code/sqlalchemy-def-mapper.py}
+Nutzt man die klassische \emph{mapper()-Syntax} so definiert man Tabellen,
+Klassen und Mappings/Relationen nacheinander.
+\autoref{lst:dbdef-mapper-tables} zeigt die Definition der Tabellen und
+datenbankseitigen Relationen (Fremdschlüssel, Indizes). Im zuvor erzeugten
+\texttt{metadata}-Objekt legt SQLAlchemy die Metadaten zu den Tabellen und
+Relationen ab. Desweiteren kann man über dieses Objekt die Tabellen in der
+Datenbank erstellen (\texttt{metadata.create\_all()}) und auch löschen lassen.
+Da die \emph{id}-Spalten als \texttt{Integer} und \texttt{primary\_key}
+definiert sind generiert SQLAlchemy automatisch eine automatisch
+inkrementierende Spalte - d.h. in PostgreSQL eine Spalte vom Typ \texttt{serial}
+und in MySQL eine \texttt{INT}-Spalte mit dem \texttt{AUTO\_INCREMENT}-Attribut.
+Damit die Spalten nicht \texttt{NULL} sein dürfen wurde bei allen
+nicht-Primärschlüssel-Spalten das \texttt{nullable}-Attribut auf \texttt{False}
+gesetzt. Bei den Primärschlüsseln ist dies nicht notwendig, da ein
+Primärschlüssel \textit{per definitionem} nicht \texttt{NULL} sein kann.
+Ebenfalls in der Tabellendefinition enthalten sind Fremdschlüssel, die mit dem
+\texttt{ForeignKey()}-Konstrukt definiert werden, und reguläre Indizes, die mit
+\texttt{index=True} definiert werden.
+
+\lstinputlisting[language=Python,label=lst:dbdef-mapper-tables,lastline=30,
+caption=Definition der Tabellen]{code/sqlalchemy-def-mapper.py}
+
+\todotext{Klassendefinition - \autoref{lst:dbdef-mapper-classes}}
+
+\lstinputlisting[language=Python,label=lst:dbdef-mapper-classes,firstline=32,
+lastline=43,caption=Definition der Klassen]{code/sqlalchemy-def-mapper.py}
+
+\todotext{Mapping - \autoref{lst:dbdef-mapper-mapping}}
+
+\lstinputlisting[language=Python,label=lst:dbdef-mapper-mapping,firstline=45,
+lastline=52,caption=Mapping der Tabellen auf die
+Klassen]{code/sqlalchemy-def-mapper.py}
+
 
 \subsection{Deklarative Syntax}
 
