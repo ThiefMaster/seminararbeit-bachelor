@@ -57,24 +57,24 @@ Wie bereits erwähnt gibt es zwei Möglichkeiten, die Datenbankstruktur und das
 dazugehörige Mapping zu definieren. Als Beispiel für die beiden Möglichkeiten
 wird jeweils die folgende Beispieldatenbank dienen:
 
-\underline{Tabelle \textbf{authors}:}\\
+\ul{Tabelle \textbf{authors}:}\\
 \textbf{id} \texttt{INTEGER NOT NULL}\\
 name \texttt{VARCHAR NOT NULL}
 
-\underline{Tabelle \textbf{books}:}\\
+\ul{Tabelle \textbf{books}:}\\
 \textbf{id} \texttt{INTEGER NOT NULL}\\
 \textit{author\_id} \texttt{INTEGER NOT NULL}\\
 title \texttt{VARCHAR NOT NULL}
 
-\underline{Tabelle \textbf{tags}:}\\
+\ul{Tabelle \textbf{tags}:}\\
 \textbf{id} \texttt{INTEGER NOT NULL}\\
 tag \texttt{VARCHAR UNIQUE NOT NULL}
 
-\underline{Tabelle \textbf{tags2books}:}\\
+\ul{Tabelle \textbf{tags2books}:}\\
 \textbf{\textit{tag\_id}} \texttt{INTEGER NOT NULL}\\
 \textbf{\textit{book\_id}} \texttt{INTEGER NOT NULL}
 
-\underline{Fremdschlüssel-Beziehungen:}\\
+\ul{Fremdschl\"ussel-Beziehungen:}\\
 books.author\_id $\rightarrow$ authors.id\\
 tags2books.tag\_id -> tags.id\\
 tags2books.author\_id -> authors.id
