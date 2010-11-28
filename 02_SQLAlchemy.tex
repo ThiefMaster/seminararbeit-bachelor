@@ -153,6 +153,33 @@ Klassen]{code/sqlalchemy-def-mapper.py}
 
 \subsection{Deklarative Syntax}
 
+Die grundlegenden Methoden sind bei der deklarativen Syntax mit denen der
+\texttt{mapper()}-Syntax identisch: Relationen werden ebenfalls mit
+\texttt{relationship()} und Spalten mit \texttt{Column()} definiert, was man in
+\autoref{lst:dbdef-decl} leicht erkennt.
+Allerdings sind weder \texttt{mapper()}-Aufrufe noch reine Tabellendefinitionen
+notwendig - man definiert einfach eine Klasse, die von der durch
+\texttt{declarative\_base()} erzeugten Klasse erbt und Felder mit den
+Spaltennamen enthält. im \texttt{Column()}-Aufruf fällt der Spaltenname dafür
+weg, da er ja schon durch den Feldnamen angegeben wurde. Der Tabellenname in der
+Datenbank wird mit dem "magischen" Feld \texttt{\_\_tablename\_\_} angegeben;
+desweiteren können Parameter, die normalerweise an \texttt{mapper()} übergeben
+würden, mit \texttt{\_\_mapper\_args\_\_} festgelegt werden.
+Da bei Relationen u.U. die referenzierte Klasse bzw. Tabelle noch nicht definiert
+wurde ist es auch möglich, ihren Namen als String zu übergeben - dadurch ist es
+möglich, im Beispielcode in der Deklaration von \emph{Book} schon die
+\emph{Tag}-Klasse und die \emph{tags2books}-Tabelle zu referenzieren obwohl sie
+noch nicht definiert wurden.
+Ein arbeitssparendes Feature der deklarativen Syntax ist der Konstruktor, den
+jede Klasse erhält: Er weist jedes übergebene \textit{keyword argument} dem
+gleichnamigen Feld zu, d.h. man kann beispielsweise einen neuen Autor mittels
+\texttt{Author(name='Donald Knuth')} anlegen statt erst das Objekt instanziieren
+zu müssen und danach \texttt{autor.name} zuzuweisen.
+
+\lstinputlisting[language=Python,label=lst:dbdef-decl,caption=Deklarative
+Datenbankdefinition]{code/sqlalchemy-def-decl.py}
+
+
 \section{Datenbankzugriff}
 \subsection{Zugriff via ORM}
 \subsection{Lowlevel-Zugriff}
