@@ -227,6 +227,39 @@ und die geänderten Daten benutzen soll.
 \lstinputlisting[language=Python,label=lst:session,caption=Erstellen der
 Session]{code/sqlalchemy-session.py}
 
+Jegliche Änderungen an der Datenbank, die über das ORM durchgeführt werden
+sollen, benötigen eine Instanz eines gemappten Objektes.
+
+Wenn man ein neues Objekt in die Datenbank einfügen möchte, erstellt man einfach
+eine neue Objektinstanz und fügt es mittels \texttt{session.add(objekt)} der
+Session hinzu. Sofern man nicht mit \emph{autocommit} arbeitet ist danach noch
+ein Aufruf von \texttt{session.commit()} notwendig, um das Objekt tatsächlich in
+der Datenbank zu speichern. Falls das neue Objekt andere noch nicht persistierte
+Objekte referenziert, müssen diese nicht separat der Session hinzugefügt werden;
+SQLAlchemy persistiert automatisch alle Objekte, die von einem neuen Objekt
+referenziert werden. \autoref{lst:orm-add} demonstriert dieses Feature, indem
+verschiedene Objekte angelegt werden und auf verschiedene Arten miteinander
+verknüpft werden:
+Die einfachste Methode ist, einfach dem entsprechenden Feld das zu verknüpfende
+Objekt zuzuweisen: \texttt{author=jresig} \\
+Im Falle der M:N-Relation \emph{Book.tags} handelt es sich beim
+\texttt{tags}-Feld um eine Liste. Daher muss in diesem Fall eine Liste statt
+eines einzelnen Objekts zugewiesen oder eine entsprechende Listenoperation
+wie \texttt{.add(objekt)} verwendet werden. Da die \emph{Book.tags}-Relation
+mit einen \textit{backref} \texttt{Tag.books} definiert wurde, kann
+\texttt{jsbook} nun auch über die Liste \texttt{jquery.books} referenziert und
+auch verändert werden. Um nun noch ein Tag \emph{javascript} zu erstellen und es
+mit dem neuen Buch zu verknüpfen, könnte man es einfach der
+\texttt{jsbook.tags}-Liste hinzufügen. Allerdings ist es auch umgekehrt möglich,
+indem man das Buch der \texttt{books}-Liste des neuen Tags hinzufügt. Obwohl die
+Tag-Instanz nirgends zugewiesen wurde wird sie durch die Relation
+\texttt{Tag.books} und die dazugehörige \texttt{Book.tags}-Relation mit dem Buch
+verknüpft und daher korrekt persistiert.
+
+\lstinputlisting[language=Python,label=lst:orm-add,caption=Persistieren von
+Objekten]{code/sqlalchemy-orm-add.py}
+
+\todotext{Auslesen, filtern, modifizieren, löschen}
 
 \subsection{Lowlevel-Zugriff}
 
