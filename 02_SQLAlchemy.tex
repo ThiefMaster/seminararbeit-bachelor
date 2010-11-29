@@ -185,7 +185,49 @@ Datenbankdefinition]{code/sqlalchemy-def-decl.py}
 
 
 \section{Datenbankzugriff}
+
+In der Datenbankdefinition wurde bisher noch keine Datenbank angegeben
+geschweige denn eine Verbindung aufgebaut. Damit SQLAlchemy eine Verbindung
+aufbauen und für die jeweilige Datenbank gültiges SQL generieren kann, ist es
+notwendig, das \emph{metadata}-Objekt mit einer \emph{engine} zu verbinden. Dies
+geschieht über die \texttt{bind}-Eigenschaft von \emph{metadata}. In
+\autoref{lst:engine-bind} wird eine Verbindung zu \emph{postgresql:///test}
+aufgebaut, d.h. zu einer PostgreSQL-Datenbank namens \emph{test}, die ohne
+weitere Authentifizierung erreichbar ist. Sofern Benutzername, Passwort oder
+andere Parameter notwendig sind, werden sie in derselben Art und Weise
+angegeben, die auch bei anderen URLs - z.B. bei Weblinks - üblich ist: \\
+\texttt{dialect://user:password@host/dbname[?key=value..]} \\
+Der \texttt{echo=True}-Parameter von \texttt{create\_engine()} gibt an, dass
+jegliche SQL-Abfragen auf \emph{stdout} ausgegeben werden, was insbesondere bei
+der Entwicklung nützlich ist, um beispielsweise erkennen zu können ob man
+durch Relationen mit \emph{lazy loading} zusätzliche Abfragen verursacht.
+Nachdem \emph{metadata} nun eine \emph{engine} besitzt, können die definierten
+Tabellen mit \texttt{metadata.create\_all()} erstellt werden.
+
+\lstinputlisting[language=Python,label=lst:engine-bind,caption=Verbindung zur
+Datenbank]{code/sqlalchemy-engine-bind.py}
+
 \subsection{Zugriff via ORM}
+
+Um per ORM auf die Datenbank zugreifen zu können, ist nicht nur die
+Datenbankverbindung in Form einer \emph{engine} notwendig, sondern auch eine
+\emph{session}. Die dazu notwendige Klasse wird mit der Funktion
+\texttt{sessionmaker()} erstellt, die als Parameter die \emph{engine} erwartet.
+Ein weiterer Parameter, der in \autoref{lst:session} benutzt wird, ist
+\texttt{autocommit}. Wenn \texttt{autocommit} deaktiviert ist, startet
+SQLAlchemy automatisch eine Transaktion, sobald auf die Datenbank zugegriffen
+wird, sodass man Änderungen mit \texttt{session.commit()} bestätigen bzw. mit
+\texttt{session.rollback()} rückgängig machen muss. Es ist nicht zu empfehlen,
+\texttt{autocommit} zu aktivieren, da man dann nach Änderungen an einem Objekt
+nicht erwarten kann, dass diese sofort in der Datenbank persistiert werden.
+Die kann problematisch sein, wenn eine Applikation direkt nach einer Änderung
+ein externes Programm aufruft, welches ebenfalls auf die Datenbank zugreift
+und die geänderten Daten benutzen soll.
+
+\lstinputlisting[language=Python,label=lst:session,caption=Erstellen der
+Session]{code/sqlalchemy-session.py}
+
+
 \subsection{Lowlevel-Zugriff}
 
 \section{Deklarationsfreies ORM mit SqlSoup}
