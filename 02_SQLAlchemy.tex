@@ -306,7 +306,111 @@ Felder als \emph{Key} und Werte bzw. SQL-Ausdrücke als \emph{Value} enthält.
 Zurückgegeben wird die Anzahl der veränderten Zeilen.
 \end{itemize}
 
-\todotext{Query modifizieren, Daten ändern}
+Allerdings will man in den wenigsten Fällen eine Operation auf alle Datensätze
+anwenden. Daher wird man meistens die schon angesprochenen Modifikatoren
+benutzen, bevor man die Query ausführt. Die Modifier haben ein generatives
+Interface, d.h. jede Modifier-Funktion gibt ein neues \texttt{Query}-Object
+zurück, welches eine Kopie das ursprünglichen Objekts ist, die allerdings um die
+Optionen bzw. Kriterien des Modifiers erweitert wurde.
+
+\begin{itemize}
+\item Der einfachste Modifier ist \texttt{distinct()}. Er fügt der Query einfach
+das \texttt{DISTINCT}-Schlüsselwort hinzu.
+
+
+\item Sofern man selbst SQL schreiben möchte, kann man dies mithilfe das
+\texttt{from\_statement()}-Modifiers tun, der als Parameter einfach eine
+vollständige SQL-Abfrage erwartet. Sofern man Parameter in seiner Abfrage
+benutzt, kann man diese danach mit dem \texttt{params()}-Modifier angeben,
+welcher ein \texttt{dict} als Parameter erwartet.
+
+
+\item Für simple \emph{Spalte==Wert}-Filter ist der
+\texttt{filter\_by()}-Modifier geeignet. Man übergibt ihm die Spaltennamen und
+Werte als \textit{keyword arguments} und der Modifier verknüpft sie automatisch
+mit \texttt{AND}. Wenn die Query bereits WHERE-Filter enthält, so werden die
+neuen Filter mit den alten ebenfalls per \texttt{AND} verknüpft.
+
+
+\item Komplexe Filter erstellt man mit dem \texttt{filter()}-Modifier. Zum einen
+kann man ihm einen SQL-String übergeben, wie er auch in einer händisch
+geschriebenen Abfrage in der WHERE-Bedingung auftreten könnte. Da dies aber
+nicht im Sinne eines ORM ist, sollte man eher die von SQLAlchemy zur Verfügung
+gestellten \emph{clause constructs} nutzen. Mit diesen kann man mit einer
+Syntax, die der normalen Python-Syntax nahe kommt, bool'sche Ausdrücke
+definieren: Die Tabellenspalte gibt man in der Form \texttt{Objekt.feld} an; den
+zu vergleichenden Wert gibt man einfach als String an. Um mehrere Operanden zu
+verknüpfen wurden die bitweisen Verknüpfungsoperatoren \texttt{\&} und
+\texttt{|} überladen. Aufgrund der Operatorenpriorität (bitweise Operatoren binden
+stärker als Vergleichsoperatoren) ist es dabei allerdings notwendig, den
+Ausdruck wie in \autoref{lst:op-precedence} zu klammern.
+\begin{lstlisting}[language=Python,label=lst:op-precedence,caption=Korrekte
+Klammerung]
+# Falsch:
+.filter(Obj.colA == 123 | Obj.colB >= 456)
+# Richtig:
+.filter((Obj.colA == 123) | (Obj.colB >= 456))
+\end{lstlisting}
+
+Eine Alternative zu \texttt{\&} und \texttt{|} sind die Funktionen
+\texttt{and\_()} und \texttt{or\_()}. Sie verknüpfen alle ihre Parameter mit
+\texttt{AND} bzw. \texttt{OR}. Da man seine Ausdrücke dadurch allerdings in
+Polnischer Notation\footnote{Schreibweise für Ausdrücke, in der die Operanden
+nach dem Operator kommen.} schreibt, senkt diese Variante die Lesbarkeit des
+Codes. Daher ist es im Allgemeinen sinnvoller, die überladenen Operatoren zu
+benutzen und sauber zu Klammern.
+
+Wenn die Filter auf der obersten Ebene nur aus Konjunktionen bestehen kann man
+sie auch einfach auf mehrere \texttt{filter()}-Aufrufe verteilen - wie schon bei
+\texttt{filter\_by{}} werden die neuen Filter mit den alten per \texttt{AND}
+verknüpft.
+
+Neben Vergleichen sind auch andere Operatoren möglich. Der vermutlich Wichtigste
+ist dabei der \texttt{IN}-Operator, mit dem man überprüft, ob eine Spalte einen
+Wert aus einer Liste von Werten hat. Da man in Python den \texttt{in}-Operator
+nicht überladen kann, ist er durch die Methode \texttt{Obj.col.in\_(lst)}
+realisiert, wobei \texttt{lst} die Liste der Werte ist.
+Wenn man einen Operator benutzen will, den SQLAlchemy nicht kennt, kann man ihn
+mit der \texttt{Obj.col.op(oper)(arg)}-Methode aufrufen, wobei \texttt{oper} der
+Operator und \texttt{arg} der rechte Operand ist.
+
+
+\item Um die Anzahl der zurückgegebenen Zeilen zu beschränken benutzt man den
+\texttt{limit()}-Modifier. Sein einziger Parameter ist die maximale
+Zeilananzahl.
+
+
+\item Insbesondere in Verbindung mit dem \texttt{limit()}-Modifier will man
+oftmals auch eine gewisse Anzahl an Zeilen überspringen - beispielsweise um
+seitenweise durch eine große Menge Datensätze navigieren zu können. Dazu benutzt
+man den \texttt{offset()}-Modifier und übergibt ihm die Anzahl der zu
+überspringenden Zeilen als Parameter.
+
+
+\item Um die Datensätze bereits datenbankseitig zu sortieren gibt es den
+\texttt{order\_by()}-Modifier. Er akzeptiert genau wie \texttt{filter()} ein
+\emph{clause construct}, allerdings übergibt man normalerweise nur eine oder
+mehrere Spalten in der in der Form \texttt{Obj.col} bzw. \texttt{Obj.col.desc()}
+wenn man absteigend sortieren will.
+
+
+\item Ein insbesondere im Zusammenhang mit Relationen häufig genutzter Modifier
+ist \texttt{options()}, mit dem man verschiedene Mapper-Optionen festlegen kann.
+Dazu gehören insbesondere die Optionen \texttt{joinedload()} bzw.
+\texttt{joinedload\_all()} und \texttt{lazyload()}, die für die übergebenen
+Relationen die jeweilige Ladestrategie einstellen. \texttt{joinedload\_all()}
+aktiviert die Strategie für alle übergebenen Relationen; die normale Funktion nur
+die letzte übergebene Relation - die vorherigen sind in diesem Fall dazu notwendig,
+um den "Pfad" zur zu konfigurierenden Relation anzugeben.
+
+\item Wenn man anhand einer Spalte aus einer Relation filtern möchte, so muss
+man die Relation explizit joinen. Dazu dient der \texttt{join()}-Modifier dem
+man als Parameter entweder den Namen der Relation als String oder das Feld im
+Mappingobjekt in der Form \texttt{Obj.col} übergibt.
+
+\end{itemize}
+
+\todotext{Daten ändern}
 
 \subsection{Lowlevel-Zugriff}
 
