@@ -259,13 +259,13 @@ verknüpft und daher korrekt persistiert.
 \lstinputlisting[language=Python,label=lst:orm-add,caption=Persistieren von
 Objekten]{code/sqlalchemy-orm-add.py}
 
-Das Löschen von Objekten geschieht analog zum Hinzufügen mit der Methode
-\texttt{session.delete()}, allerdings sollte man dazu logischerweise ein
+Das Löschen von Objekten geschieht wie auch das Hinzufügen über die
+\texttt{delete()}-Methode der Session. Allerdings sollte man dazu logischerweise ein
 bereits persistiertes Objekt haben. Da man normalerweise keine Objekte löschen
 will die man gerade erst erstellt hat und es ineffizient wäre, ein Objekt aus
 der Datenbank zu \texttt{SELECT}en nur um es zu löschen, hat das
 \texttt{Query}-Objekt ebenfalls eine \texttt{delete()}-Methode, sodass man auch
-ohne eine Instanz eines gemappten Objektes löschen kann.
+ohne eine Instanz eines gemappten Objektes Daten löschen kann.
 
 Die wichtigste Operation bei einer Datenbank ist das Auslesen und Verändern von
 Daten - schließlich würde es nicht viel bringen, Daten in einer Datenbank
@@ -318,8 +318,8 @@ Optionen bzw. Kriterien des Modifiers erweitert wurde.
 das \texttt{DISTINCT}-Schlüsselwort hinzu.
 
 
-\item Sofern man selbst SQL schreiben möchte, kann man dies mithilfe das
-\texttt{from\_statement()}-Modifiers tun, der als Parameter einfach eine
+\item Sofern man selbst SQL-Statements schreiben möchte, kann man dies mithilfe
+des \texttt{from\_statement()}-Modifiers tun, der als Parameter einfach eine
 vollständige SQL-Abfrage erwartet. Sofern man Parameter in seiner Abfrage
 benutzt, kann man diese danach mit dem \texttt{params()}-Modifier angeben,
 welcher ein \texttt{dict} als Parameter erwartet.

@@ -1,7 +1,5 @@
 def get_author(cursor, quote_char, name):
-    cursor.execute("SELECT id, name FROM authors WHERE name = " +
-        quote_char, (name,))
-    return cursor.fetchone()
+    return cursor.execute("SELECT id, name FROM authors WHERE name = " + quote_char, (name,)).fetchone()
 
 pg_conn = psycopg2.connect('')
 sl_conn = sqlite3.connect('test.sqlite')
