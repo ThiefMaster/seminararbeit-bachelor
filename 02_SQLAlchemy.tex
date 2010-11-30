@@ -282,18 +282,24 @@ unsortiert abrufen möchte - kann man die Query auf verschiedene Arten ausführe
 \begin{itemize}
 \item \texttt{.all()} führt eine \texttt{SELECT}-Query aus und gibt eine Liste aller gefundenen
 Zeilen zurück.
+
 \item \texttt{.first()} führt eine \texttt{SELECT}-Query aus und gibt die erste gefundene
 Zeile oder \texttt{None} zurück.
+
 \item \texttt{.one()} führt eine \texttt{SELECT}-Query aus und gibt die einzige gefundene
 Zeile zurück oder wirft eine \texttt{NoResultFound} bzw.
 \texttt{MultipleResultsFound}-Exception.
+
 \item \texttt{.get(key)} verhält sich wie \texttt{.first()}, fügt allerdings
 zuvor einen Filter hinzu sodass nur die Zeile abgerufen wird, deren
 Primärschlüssel \texttt{key} entspricht.
+
 \item \texttt{.count()} führt eine \texttt{SELECT COUNT}-Query aus und gibt die
 Anzahl der gefundenen Zeilen zurück.
+
 \item \texttt{.delete()} führt eine \texttt{DELETE}-Query aus und gibt die Anzahl der
 gelöschten Zeilen zurück.
+
 \item \texttt{.update(values)} führt eine \texttt{UPDATE}-Query aus;
 \texttt{values} ist dabei ein \texttt{dict} welches die zu aktualisierenden
 Felder als \emph{Key} und Werte bzw. SQL-Ausdrücke als \emph{Value} enthält.
