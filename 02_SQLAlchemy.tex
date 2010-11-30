@@ -259,7 +259,48 @@ verknüpft und daher korrekt persistiert.
 \lstinputlisting[language=Python,label=lst:orm-add,caption=Persistieren von
 Objekten]{code/sqlalchemy-orm-add.py}
 
-\todotext{Auslesen, filtern, modifizieren, löschen}
+Das Löschen von Objekten geschieht analog zum Hinzufügen mit der Methode
+\texttt{session.delete()}, allerdings sollte man dazu logischerweise ein
+bereits persistiertes Objekt haben. Da man normalerweise keine Objekte löschen
+will die man gerade erst erstellt hat und es ineffizient wäre, ein Objekt aus
+der Datenbank zu \texttt{SELECT}en nur um es zu löschen, hat das
+\texttt{Query}-Objekt ebenfalls eine \texttt{delete()}-Methode, sodass man auch
+ohne eine Instanz eines gemappten Objektes löschen kann.
+
+Die wichtigste Operation bei einer Datenbank ist das Auslesen und Verändern von
+Daten - schließlich würde es nicht viel bringen, Daten in einer Datenbank
+abzulegen, wenn man sie nicht mehr auslesen oder verändern könnte. Zum Auslesen
+von Daten benötigt man das im letzten Absatz bereits erwähnte
+\texttt{Query}-Objekt. Um eine Instanz dazu bekommen, benutzt man die Methode
+\texttt{session.query()} und übergibt ihr als Parameter die Mapping-Klassen, aus
+deren Tabellen man Daten abrufen will. Dieses Objekt kann nun durch Filter,
+Sortierungen, Optionen, Joins, Limits usw. erweitert werden, die die vom Objekt
+repräsentierte SQL-Abfrage beinflussen. Wenn das Query-Objekt so konfiguriert
+ist, dass es der gewünschten Datenbankoperation entspricht - das kann auch ein
+"nacktes" Query-Objekt ohne jegliche Modifikatoren sein, sofern man alle Zeilen
+unsortiert abrufen möchte - kann man die Query auf verschiedene Arten ausführen:
+\begin{itemize}
+\item \texttt{.all()} führt eine \texttt{SELECT}-Query aus und gibt eine Liste aller gefundenen
+Zeilen zurück.
+\item \texttt{.first()} führt eine \texttt{SELECT}-Query aus und gibt die erste gefundene
+Zeile oder \texttt{None} zurück.
+\item \texttt{.one()} führt eine \texttt{SELECT}-Query aus und gibt die einzige gefundene
+Zeile zurück oder wirft eine \texttt{NoResultFound} bzw.
+\texttt{MultipleResultsFound}-Exception.
+\item \texttt{.get(key)} verhält sich wie \texttt{.first()}, fügt allerdings
+zuvor einen Filter hinzu sodass nur die Zeile abgerufen wird, deren
+Primärschlüssel \texttt{key} entspricht.
+\item \texttt{.count()} führt eine \texttt{SELECT COUNT}-Query aus und gibt die
+Anzahl der gefundenen Zeilen zurück.
+\item \texttt{.delete()} führt eine \texttt{DELETE}-Query aus und gibt die Anzahl der
+gelöschten Zeilen zurück.
+\item \texttt{.update(values)} führt eine \texttt{UPDATE}-Query aus;
+\texttt{values} ist dabei ein \texttt{dict} welches die zu aktualisierenden
+Felder als \emph{Key} und Werte bzw. SQL-Ausdrücke als \emph{Value} enthält.
+Zurückgegeben wird die Anzahl der veränderten Zeilen.
+\end{itemize}
+
+\todotext{Query modifizieren, Daten ändern}
 
 \subsection{Lowlevel-Zugriff}
 
