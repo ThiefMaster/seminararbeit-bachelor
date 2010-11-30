@@ -457,5 +457,79 @@ Daten]{code/sqlalchemy-orm-modify.py}
 
 \subsection{Lowlevel-Zugriff}
 
+Mithilfe der \emph{SQLAlchemy Expression Language} ist es möglich, auf einer
+sehr datenbanknahen Ebene auf die Daten zuzugreifen und sie zu verändern. Dazu
+benötigt man wie auch für den ORM-Zugriff Tabellendefinitionen, sodass
+SQLAlchemy die Datenbankstruktur kennt.
+Die Tabellendefinitionen bieten darüberhinaus die zur Datenveränderung
+notwendigen Methoden an.
+
+\begin{itemize}
+
+\item \texttt{select()} aus dem Modul \texttt{sqlalchemy.sql} nimmt als ersten
+Parameter eine Liste der Spalten, die vom \texttt{SELECT} ausgelesen werden
+sollen. Sofern man alle Spalten aus einer einzigen Tabelle auslesen möchte, kann
+man alternativ einfach \texttt{table.select()} nutzen.
+Um das Ergebnis zu filtern, kann man als zweiten (bzw. bei der Alternativsyntax
+als ersten) Parameter ein \emph{clause construct} übergeben. Die Syntax dabei
+ist mit der vom \texttt{filter()}-ORM-Modifier identisch, allerdings müssen
+Spaltennamen explizit in der Form \texttt{table.c.col} angegeben werden, wobei
+\texttt{table} das \texttt{Table}-Objekt der Tabellendefintion und \texttt{col}
+der Spaltenname ist. Anstelle des Parameters kann man auch die
+\texttt{where()}-Methode des von \texttt{select()} zurückgegebenen Objekts
+benutzen. Wenn man \texttt{JOIN}s nutzt, jedoch nicht alle Spalten aller
+Tabellen auslesen will, so kann man mit dem \texttt{from\_obj}-Parameter eine
+Liste der Quelltabellen angeben. Bei einfachen \texttt{JOIN}s hat die Liste
+normalerweise nur ein Element, welches man mittels
+\texttt{table.join(table2).join(table3)} erzeugt. Die \texttt{ON}-Bedingungen
+der Joins werden dabei automatisch anhand der definierten Fremdschlüssel
+gebildet. Wenn man andere Bedingungen möchte kann man diese allerdings auch als
+zusätzlichen Parameter an \texttt{join()} übergeben.
+
+\item \texttt{table.insert()} erzeugt ein \texttt{INSERT}-Statement. Um es
+auszuführen ruft man die \texttt{execute()}-Methode des von \texttt{insert()}
+zurückgegebenen Objekts auf und übergibt ihr die Spaltenwerte als
+\texttt{keyword arguments}. Um mehrere Zeilen auf einmal einzufügen kann man
+auch eine Liste übergeben, die für jede Zeile ein \texttt{dict} mit den
+Spaltenwerten enthält.
+
+\item \texttt{table.update()} verhält sich ähnlich wie \texttt{table.insert()}
+mit dem Unterschied, dass es ein \texttt{UPDATE}-Statement erzeugt welches eine
+\texttt{where()}-Methode hat um nur ausgewählte Zeilen zu verändern.
+
+\item \texttt{table.delete()} erzeugt ein \texttt{DELETE}-Statement. Um nicht
+alle Zeilen zu löschen sollte man mit der \texttt{where()}-Methode des
+Statements einen Filter angeben bevor man es mit \texttt{execute()} ausführt.
+\end{itemize}
+
+\autoref{lst:low-insert} zeigt gut, wie aufwändig eine einfache Operation -
+einen Autor und ein Buch mit einem bereits existierenden Tag anzulegen - ohne
+ORM ist. Dieselbe Operation ließe sich mit vier Zeilen ORM-Code realisieren der
+quasi genauso effizient aber sehr viel lesbarer wäre.
+Beim Einfügen einer Zeile wird ein \texttt{ResultProxy} zurückgegeben, aus dem
+man die ID in Form eines Primärschlüssel-Tupels erhält - obwohl der
+Primärschlüssel nur aus einer einzigen Spalte besteht muss man ihn manuell aus
+dem Tupel extrahieren. Beim Auslesen der Tag-ID müssen die Spalten nun mit ihrem
+vollen Namen referenziert werden; es reicht nicht mehr aus, nur den Spaltennamen
+anzugeben. Da wir auf einer sehr niedrigen Ebene arbeiten bietet SQLAlchemy nun
+auch keine Möglichkeit an, Tag und Buch automatisch zu verknüpfen - auch dazu
+muss manuell ein SQL-Statement ausgeführt werden.
+
+\lstinputlisting[language=Python,label=lst:low-insert,caption=Einf\"ugen von
+Daten ohne ORM]{code/sqlalchemy-low-insert.py}
+
+Der Code in \autoref{lst:low-select} liest wie sein ORM-Pendant in in
+\autoref{lst:orm-select-join} alle Bücher mit einem bestimmten Tag aus. Da man
+außer den Fremdschlüsseln keine Relationen hat muss man manuell angeben, wie
+Bücher und Tags miteinander verknüpft werden - allerdings hilft SQLAlchemy
+insofern, dass die Joins nur definiert werden müssen und die Bedingungen
+automatisch generiert werden. Zum Filtern der Ergebnisse wird diesmal die besser
+verständliche \texttt{where()}-Syntax statt des \texttt{select()}-Parameters
+verwendet. Nach dem Ausführen der Query mittels \texttt{execute()} kann über die
+Zeilen iteriert werden.
+
+\lstinputlisting[language=Python,label=lst:low-select,caption=Auslesen von Daten
+aus verkn\"upften Tabellen ohne ORM]{code/sqlalchemy-low-select.py}
+
 \section{Deklarationsfreies ORM mit SqlSoup}
 
