@@ -410,7 +410,50 @@ Mappingobjekt in der Form \texttt{Obj.col} übergibt.
 
 \end{itemize}
 
-\todotext{Daten ändern}
+In \autoref{lst:orm-select} werden verschiedene Modifier genutzt, um alle Bücher
+eines Autors und die Tags dieser Bücher in einer einzigen Query abzurufen. Da
+sowohl \texttt{Author.books} als auch \texttt{Book.tags} nicht für
+\emph{eager-loading} konfiguriert wurde, muss dies per \texttt{options()} im
+\texttt{Query}-Objekt gemacht werden. Desweiteren wird mittels
+\texttt{filter\_by()} nur ein bestimmer Autor ausgelesen. Da im Beispielcode
+angeonmmen wird, dass der Autor immer existiert, wird die Query mit
+\texttt{one()} gestartet, sodass es eine Exception gegeben würde, wenn dem nicht
+so wäre.
+
+\lstinputlisting[language=Python,label=lst:orm-select,caption=Abrufen von
+Daten]{code/sqlalchemy-orm-select.py}
+
+\autoref{lst:orm-select-join} zeigt, wie man mit SQLAlchemy Daten ausliest und
+anhand einer Spalte aus einer anderen Tabelle, die über eine Relation verknüpft
+ist, filtert. Mittels des \texttt{join()}-Modifiers wird die
+\emph{Book.tags}-Relation in die Abfrage eingefügt. Danach wird - um nicht pro
+Buch beim Anzeigen der Tags eine weitere Abfrage an die Datenbank schicken zu
+müssen - wie bereits in \autoref{lst:orm-select} \emph{eager-loading} für die
+\texttt{Book.tags}-Relation aktiviert. Beim Filtern wird dieses mal in
+\texttt{filter()} explizit angegeben, dass sich der Filter auf \texttt{Tag.tag}
+bezieht - allerdings könnte man auch \texttt{filter\_by(tag='jquery')} nutzen,
+da der Bezeichner \texttt{tag} eindeutig ist. Da es durchaus mehrere Bücher mit
+einem bestimmten Tag geben kann, wird die Query nun mit \texttt{all()}
+ausgeführt.
+
+\lstinputlisting[language=Python,label=lst:orm-select-join,caption=Filtern von
+Daten anhand einer Relation]{code/sqlalchemy-orm-select-join.py}
+
+Um Daten zu verändern, benötigt man die dazugehörige Instanz des
+Mapping-Objekts. Dort kann man einfach die Felder ändern. Bei Relationen sind
+die Felder Listen, d.h. man kann nicht nur eine neue Liste zuweisen sondern auch
+einzelne Elemente hinzufügen/löschen. Wie auch bei allen anderen Veränderungen
+an der Datenbank ist es hier notwendig, am Ende \texttt{session.commit()}
+auszuführen, um sie zu bestätigen. Alternativ kann man sie natürlich auch mit
+\texttt{session.rollback()} rückgängig machen.
+
+In \autoref{lst:orm-modify} werden einem \texttt{Book}-Objekt zwei Tags
+hinzugefügt: ein bereits vorhandener, der daher erst aus der Datenbank
+ausgelesen werden muss, und ein neuer, der beim Commit der Änderungen
+automatisch erstellt wird.
+
+\lstinputlisting[language=Python,label=lst:orm-modify,caption=Ver\"andern von
+Daten]{code/sqlalchemy-orm-modify.py}
 
 \subsection{Lowlevel-Zugriff}
 
