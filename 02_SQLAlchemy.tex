@@ -536,3 +536,63 @@ aus verkn\"upften Tabellen ohne ORM]{code/sqlalchemy-low-select.py}
 
 \section{Deklarationsfreies ORM mit SqlSoup}
 
+Oftmals muss man mit einer bereits vorhandenen Datenbank arbeiten, die entweder
+mit einem anderen ORM wie z.B. Hibernate oder Propel oder aber manuell erstellt
+wurde. Je nach Tabellenanzahl ist es in diesem Fall z.T. sehr aufwändig, eine
+SQLAlchemy-kompatible Datenbankdefinition zu erstellen; insbesondere wenn man
+die bestehende Software nicht auf SQLAlchemy umstellen will sondern nur auf die
+Datenbank davon zugreifen will. Für solche Fälle gibt es die
+\emph{SqlSoup}-Extension. Diese liest die Datenbankstruktur einschließlich
+Fremdschlüsseln mittels Reflection aus und generiert daraus Mapping-Klassen die
+einen sehr einfachen Zugriff auf die Datenbank ermöglichen - allerdings wird in
+der Dokumentation von \emph{SqlSoup} explizit darauf hingewisen dass man außer
+für sehr triviale Aufgaben das "richtige" ORM-System anstelle von \emph{SqlSoup}
+benutzen soll. Insbesondere in Kommandozeilenprogrammen und Webanwendungen, wo
+je nach Framework der gesamte Code regelmäßig ausgeführt werden muss, ist zu
+bedenken dass \emph{SqlSoup} sehr viele Abfragen benötigt, um die
+Datenbankstruktur herauszufinden während SQLAlchemy bei einer sauberen
+Definition bereits alle benötigten Informationen hat und keine Datenbankzugriffe
+dafür notwendig sind.
+
+In \autoref{lst:sqlsoup-init} wird eine Verbindung zur Datenbank aufgebaut und
+danach \emph{SqlSoup} initialisiert. Da eine Datenbank zwar Fremdschlüssel aber
+keine komplexen Relationsdefinitionen enthalten kann, müssen diese manuell im
+Code definiert werden. Die Syntax von \texttt{db.table.relate()} enspricht dabei
+im Groben der von \texttt{relationship()} aus dem ORM-Modul. Es ist zu beachten,
+dass die Relationsziele bei SqlSoup in der Form \texttt{db.table} angegeben
+werden und die Tabellendefinitionen, die man bei Many-to-Many-Relationen für die
+Assoziationstabelle benötigt, im Feld \texttt{\_table} von \texttt{db.table}
+liegen.
+
+\lstinputlisting[language=Python,label=lst:sqlsoup-init,caption=Initialisieren
+von SqlSoup]{code/sqlsoup-init.py}
+
+Wie \autoref{lst:sqlsoup-select} zeigt, geschieht das Auslesen von Daten mittels
+SqlSoup geschieht analog zum Auslesen via SQLAlchemy/ORM. Der einzige
+Unterschied ist, dass man nicht \texttt{session.query()} sondern
+\texttt{db.table} als Query-Objekt nutzt. An der Modifier-Syntax und dem Zugriff
+auf die Daten ändert sich nichts - abgesehen von der anderen Parametersyntax die
+aber nur daher kommt, dass die Mapping-Klassen nicht mehr global definiert sind
+sondern innerhalb vom \texttt{SqlSoup}-Objekt \texttt{db} liegen.
+
+\lstinputlisting[language=Python,label=lst:sqlsoup-select,caption=Auslesen von
+Daten mit SqlSoup]{code/sqlsoup-select.py}
+
+Zum Modifizieren und Löschen von Daten benutzt man wie auch schon im regulären
+SQLAlchemy normalerweise Instanzen der Mapping-Objekte. Allerdings benutzt man
+statt \texttt{session.delete()} nun \texttt{db.delete()} und auch die
+Transaktionsfunktionen \texttt{commit()} und \texttt{rollback()} werden in
+SqlSoup über das von \texttt{SqlSoup()} erstellte \texttt{db}-Objekt ausgeführt.
+
+Die Syntax zum Persistieren neuer Objekte unterscheidet sich von der bereits
+bekannten insofern, dass man kein neues Objekt erstellt und dieses dann mittels
+\texttt{session.add()} der Datenbank hinzufügt sondern
+\texttt{db.table.insert()} nutzt und dieser Methode die Spaltenwerte als
+\textit{keyword arguments} übergibt. \autoref{lst:sqlsoup-ins-del} nutzt diese
+Methode, um einen neuen Autoren anzulegen, der danach allerdings sofort wieder
+gelöscht wird. Der Commit zwischen Anlegen und Löschen ist notwendig, da
+SQLAlchemy den Versuch, ein nicht persistiertes Objekt zu löschen, mit einer
+\texttt{InvalidRequestError}-Exception ablehnt.
+
+\lstinputlisting[language=Python,label=lst:sqlsoup-ins-del,caption=Einf\"ugen
+und L\"oschen von Daten mit SqlSoup]{code/sqlsoup-ins-del.py}
