@@ -82,16 +82,17 @@ bestimmte Übersetzung zu kommen ist es wünschenswert, bei der Relation von
 \texttt{News} nach \texttt{NewsTranslation} keine Liste mit numerischen Indizes
 sondern ein \texttt{dict} mit dem Sprachkürzel als Index zu haben. Dies wird in
 \autoref{lst:gs-model-news} mithilfe des \texttt{collection\_class}-Parameters
-von \texttt{relationship()} realisiert.
+von \texttt{relationship()} realisiert. \\
 \texttt{attribute\_mapped\_collection('language')} gibt an, dass das Feld
-\texttt{language} als Index benutzt werden soll. Zusätzlich wurde mit
+\texttt{language} als Index benutzt werden soll. \\
+Zusätzlich wurde mit
 \texttt{cascade='all, delete, delete-orphan'} festgelegt, dass "verwaiste"
 Übersetzungen, d.h. Übersetzungen deren Original-News gelöscht wurde, ebenfalls
-gelöscht werden. Dies übernimmt zwar bereits der Fremdschlüssel dank
-\texttt{ondelete='CASCADE'} in der Datenbank, allerdings würde SQLAlchemy ohne
-die Kaskadierung versuchen, \texttt{NewsTranslation.newsid} auf \texttt{NULL} zu
-setzen, was an \texttt{nullable=False} scheitern würde und auch nicht gewollt
-ist.
+gelöscht werden. Der Fremdschlüssel übernimmt dies dank
+\texttt{ondelete='CASCADE'} zwar bereits, allerdings würde SQLAlchemy ohne
+die Kaskadierung versuchen, die \texttt{newsid} der \texttt{NewsTranslation} auf
+\texttt{NULL} zu setzen, was an \texttt{nullable=False} scheitern würde und auch
+nicht gewollt ist.
 
 \lstinputlisting[language=Python,label=lst:gs-model-news,
 caption=News-Tabellendefinition]{code/gs-model-news.py}
