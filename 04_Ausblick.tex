@@ -32,7 +32,38 @@ verwenden. Eine vollständigere Liste, die auch diverse auf SQLAlchemy basierend
 Bibliotheken enthält, gibt es im
 \href{http://www.sqlalchemy.org/trac/wiki/SAApps}{SQLAlchemy-Wiki}.
 
+
 \section{Unterschiede zu anderen ORMs}
 
-\section{Fazit}
+Das neben SQLAlchemy bekannteste ORM für Python ist
+\href{http://www.djangoproject.com/}{Django}. Allerdings handelt es sich bei
+Django nicht nur um ein ORM sondern um ein komplettes Webframework. Die
+Datenbankstruktur wird im Django-ORM ähnlich wie bei der deklarativen
+SQLAlchemy-Syntax modelliert; es sind also keine XML-Dateien o.ä. dazu
+notwendig.
 
+Auch \href{http://www.sqlobject.org}{SQLObject}, ein weiteres ORM für Python,
+benutzt eine SQLAlchemy/Django-ähnliche Syntax, die es ermöglicht, eine
+Datenbank ausschließlich mit Python-Code zu modellieren. Wie auch schon Django
+bietet auch SQLObject ausschließlich eine \emph{deklarative} Syntax an und damit
+keine Möglichkeit, Tabellen und Mappingobjekte separat zu definieren.
+
+In der \href{http://www.php.net}{PHP}-Welt ist
+\href{http://www.propelorm.org}{Propel} ein verbreitetes ORM. Anders als bei den
+zuvor beschriebenen ORMs ist es bei Propel notwendig, die Datenbankstruktur in
+einer XML-Datei zu definieren. Anhand dieser XML-Datei kann danach mit dem
+Script \texttt{propel-gen} der PHP-Code für die Objektmodelle generiert werden.
+Ein weiteres Feature von \texttt{propel-gen} ist das Generieren einer SQL-Datei
+die zum Erstellen der in der XML-Datei definierten Tabellen genutzt werden kann
+- alternativ kann man den erzeugten SQL-Code auch direkt ausführen lassen statt
+ihn in eine Datei zu schreiben.
+
+Das wohl bekannteste ORM ist \href{http://www.hibernate.org/}{Hibernate} für
+Java bzw. \href{http://nhforge.org/}{NHibernate} für das .NET-Framework. Auch
+dort werden die Tabellen in XML-Dateien definiert und danach mit einem externen
+Programm Klassen und/oder die Datenbanktabellen erzeugt. Ähnlich wie SQLAlchemy
+bietet auch Hibernate mit der HQL\footnote{Hibernate Query Language} eine
+Möglichkeit, SQL auf einer niedrigen Ebene zu generieren ohne SQL-Abfragen in
+Stringform schreiben zu müssen.
+
+\section{Fazit}
