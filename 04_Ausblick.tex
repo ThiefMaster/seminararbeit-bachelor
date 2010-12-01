@@ -66,4 +66,31 @@ bietet auch Hibernate mit der HQL\footnote{Hibernate Query Language} eine
 Möglichkeit, SQL auf einer niedrigen Ebene zu generieren ohne SQL-Abfragen in
 Stringform schreiben zu müssen.
 
+
 \section{Fazit}
+
+SQLAlchemy bietet sowohl Entwicklern, die noch nicht viel mit Datenbanken zu tun
+hatten, als auch erfahrenen Datenbankentwicklern, die SQL als zweite
+Muttersprache bezeichnen können eine komfortable objektrelationale
+Datenbankschnittstelle.
+
+Durch die Tatsache, dass zur Datenbankdefinition keine XML-Dateien mit einer
+erst zu lernenden Struktur benötigt werden sondern ganz normaler Python-Code
+geschrieben werden kann, hat man sich auch schnell in SQLAlchemy eingearbeitet.
+
+Wenn man ein bereits existierendes Projekt auf SQLAlchemy umstellen will ist
+auch dies ohne Weiteres möglich, da man keinen generierten Code, der sich evtl.
+über viele einzelne Dateien erstreckt, hat sondern nur eine einzelne Datei mit
+den Datenbankdefinitionen (oder auch mehrere Dateien sofern man die Definitionen
+einer großen Datenbank auf mehrere Dateien verteilen möchte) hinzufügen und
+einbinden muss und dann sofort eine vollständige ORM-Unterstützung hat. Dank der
+Möglichkeit, komplett handgeschriebene SQL-Statements abzuschicken kann man auch
+ohne Weiteres die bereits vorhandenen Datenbankabfragen über SQLAlchemy laufen
+lassen und sie schrittweise auf ORM umstellen.
+
+Kurz gesagt, SQLAlchemy ist ein komfortables ORM-System und wenn man mit Python
+arbeitet und nicht gerade schon durch Django ein anderes ORM benutzt ist es auf
+jeden Fall einen Blick wert - ob man letzendlich ORM nutzen will oder nicht muss
+man dann für sich selbst entscheiden. Allerdings ist die Zeitersparnis bei
+gerade bei CRUD\footnote{\textbf{C}reate \textbf{R}ead \textbf{U}pdate
+\textbf{D}elete}-Standardaufgaben enorm.
