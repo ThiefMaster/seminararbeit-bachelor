@@ -1,1 +1,104 @@
 \chapter{SQLAlchemy - praktische Nutzung}
+
+Die derzeit noch in Entwicklung befindliche neue Version der Websites des
+\href{http://www.gamesurge.net}{GameSurge IRC-Netzes} verwendet eine angepasste
+Version des \href{https://github.com/gmr/tinman}{Tinman-Frameworks}, welches auf
+dem \href{http://www.tornadoweb.org/}{Tornado-Framework/Webserver} von Facebook
+basiert. Die wichtigste Anpassung bei Tinman betrifft den SQLAlchemy-Code des
+Datenbankmoduls, der standardmäßig immer \texttt{autocommit} benutzt, was wie in
+\autoref{sqlalchemy-orm} erwähnt problematisch sein kann. In der angepassten
+Version kann \texttt{autocommit} per Configdatei deaktiviert werden, was auch
+notwendig ist, damit die Website korrekt funktioniert.
+
+Das erste Beispiel - die dazugehörige Tabelle wird in
+\autoref{lst:gs-model-trustrequest} definiert - ist aus einem Interface, über
+das Benutzer gewisse Privilegien, sog. \emph{Trusts}, für ihre IP-Adresse
+beantragen können. Da die Website PostgreSQL als Datenbankbackend nutzt und sich
+dies mit größter Wahrscheinlichkeit nicht ändern wird, wird die IP-Adresse in
+einem Datenbankfeld des Typs \texttt{postgresql.INET} gespeichert. Am Namen des
+Datentypen sieht man bereits, dass es sich hierbei um einen
+datenbankspezifischen Typen handelt, der nicht mit anderen Datenbanksystemen
+funktionieren wird. Allerdings hat er den Vorteil, dass er sowohl IPv4- als auch
+IPv6\footnote{\emph{Internet Protocol Version 6}, dringend benötigter Nachfolger
+des aktuellen IPv4 mit einem weitaus größeren Adressraum von $2^{128}$ statt
+$2^{32}$}-Adressen effizient speichern kann und IP-spezifische Operationen wie
+eine Suche nach IPs innerhalb eines gewissen Subnetzes unterstützt.
+Der Parameter \texttt{server\_default} der Spalte \texttt{request\_time} gibt
+an, dass beim Erstellen der Tabelle ein serverseitiger Defaultwert angegeben
+wird, der durch die SQL-Funktion \texttt{current\_timestamp()} erzeugut wird.
+Das zum Erstellen der Tabelle generierte SQL enthält also \texttt{DEFAULT
+current\_timestamp()}. Alternativ zum \texttt{server\_default}-Parameter gäbe es
+auch \texttt{default}. Diese Option würde der Spalte in der Datenbank keinen
+Defaultwert zuweisen sondern ihn explizit im \texttt{INSERT}-Statement setzen.
+
+\lstinputlisting[language=Python,label=lst:gs-model-trustrequest,
+caption=TrustRequest-Tabellendefinition]{code/gs-model-trustrequest.py}
+
+\autoref{lst:gs-trust-request} ist der Code hinter dem für Benutzer zugänglichen
+Formular. Um zu verhindern, dass ein \emph{Trust} erneut beantragt wird, solange
+der erste Antrag noch nicht bearbeitet wurde, wird die Anzahl der offenen
+Anträge für die angegebene IP aus der Datenbank ausgelesen und sofern sie nicht
+\texttt{0} ist mit einer Fehlermeldung abgebrochen. Danach wird das neue
+\texttt{TrustRequest}-Objekt erstellt und mit Daten gefüllt. Da zusätzlich noch
+Daten zu der IP abgefragt werden sollen, die u.U. längere Netzwerkanfragen
+benötigen, wird das Objekt noch nicht persistiert sondern zuerst an asynchrone
+Funktionen übergeben, die diese Daten abfragen. Nachdem alle Daten abgefragt
+und dem Objekt hinzugefügt wurden, wird das Objekt in der Methode
+\texttt{post\_resolved()} der Session hinzugefügt und die Datenbanktransaktion
+committed.
+
+\lstinputlisting[language=Python,label=lst:gs-trust-request,
+caption=Erstellen eines neuen TrustRequest-Objekts]{code/gs-trust-request.py}
+
+Beim Bearbeiten der Anträge ist es oftmals von Interesse, ob der Benutzer
+schon andere \emph{Trusts} beantragt hat und ob für die angegebene IP-Adresse
+bereits \emph{Trusts} beantragt wurden. Diese Informationen werden vom Code in
+\autoref{lst:gs-trust-list} abgerufen. In der dort verwendeten Query sieht man
+gut die Vermischung von ORM und klassischen SQL-Konstrukten für komplexe
+Abfragen: Die \texttt{TrustRequest}-Objekte selbst werden über die normalen
+ORM-Funktinen aus der Datenbank abgerufen. Allerdings wird die Query um
+\texttt{ip\_reqs.as\_scalar()} und \texttt{user\_reqs.as\_scalar()} erweitert.
+Die Methode \texttt{as\_scalar()} gibt ein \texttt{Query}-Objekt in einer
+Subquery-kompatiblen Form zurück. Ebenfalls erwähnenswert ist das Erstellen der
+Subqueries. Da es notwendig ist, in der \texttt{WHERE}-Bedingung der Subqueries
+eine Spalte aus derselben Tabelle der Haupt-Query zu referenzieren, muss die
+Tabelle der Subquery über einen Alias referenziert werden. Dies geschieht mit
+der \texttt{aliased()}-Funktion.
+Beim Iterieren über das Resultset bekommt man für die einzelnen Zeilen nun nicht
+mehr einfach das Mapping-Objekt sondern ein Tupel, welches alle im
+\texttt{query()}-Aufruf angegebenen Elemente enthält, d.h. das Mapping-Objekt
+für den \texttt{TrustRequest} und von \texttt{ip\_reqs} und \texttt{user\_reqs}
+jeweils einen Integer.
+
+\lstinputlisting[language=Python,label=lst:gs-trust-list,
+caption=Abrufen von TrustRequest-Objekten und zus\a"tzlichen
+Informationen]{code/gs-trust-list.py}
+
+Die Website soll ebenfalls die Möglichkeit bieten, News zu posten und
+nachträglich in andere Sprachen zu übersetzen. Dabei sollen die
+englischsprachigen News und die Übersetzungen in verschiedenen Tabellen
+gespeichert werden. Um anhand einem \texttt{News}-Objekts leicht an eine
+bestimmte Übersetzung zu kommen ist es wünschenswert, bei der Relation von
+\texttt{News} nach \texttt{NewsTranslation} keine Liste mit numerischen Indizes
+sondern ein \texttt{dict} mit dem Sprachkürzel als Index zu haben. Dies wird in
+\autoref{lst:gs-model-news} mithilfe des \texttt{collection\_class}-Parameters
+von \texttt{relationship()} realisiert.
+\texttt{attribute\_mapped\_collection('language')} gibt an, dass das Feld
+\texttt{language} als Index benutzt werden soll. Zusätzlich wurde mit
+\texttt{cascade='all, delete, delete-orphan'} festgelegt, dass "verwaiste"
+Übersetzungen, d.h. Übersetzungen deren Original-News gelöscht wurde, ebenfalls
+gelöscht werden. Dies übernimmt zwar bereits der Fremdschlüssel dank
+\texttt{ondelete='CASCADE'} in der Datenbank, allerdings würde SQLAlchemy ohne
+die Kaskadierung versuchen, \texttt{NewsTranslation.newsid} auf \texttt{NULL} zu
+setzen, was an \texttt{nullable=False} scheitern würde und auch nicht gewollt
+ist.
+
+\lstinputlisting[language=Python,label=lst:gs-model-news,
+caption=News-Tabellendefinition]{code/gs-model-news.py}
+
+Im News-Template (\autoref{lst:gs-news-tpl}) wird bei der Ausgabe dann einfach
+geprüft, ob es für die aktuelle Sprache eine Übersetzung gibt und danach
+entweder die Übersetzung oder das englische Original ausgegeben.
+
+\lstinputlisting[language=Python,label=lst:gs-news-tpl,caption=News-Template]
+{code/gs-news-tpl.html}

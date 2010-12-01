@@ -1,0 +1,5 @@
+{% if handler.locale.code in entry.translations %}
+  {{ markdown(entry.translations[handler.locale.code].content) }}
+{% else %}
+  {{ markdown(entry.content) }}
+{% end %}
