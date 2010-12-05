@@ -16,10 +16,10 @@ Datenbank teilweise nur auf nicht direkt mit dem Internet verbundenen Rechnern
 gespeichert sind. \\
 Mozilla setzt SQLAlchemy im Rahmen des \emph{Firefox Sync}-Systems ein, mit dem
 man seine Bookmarks, History und Passwörter verschlüsselt bei Mozilla speichern
-und zwischen verschiedenen PCs synchronisieren kann.
+und zwischen verschiedenen Computern synchronisieren kann.
 
 Die \href{http://fedoraproject.org/wiki/Infrastructure/Services}{Fedora
-Foundation} setzt SQLAlchemy für einen Großteil der Infrastruktur ein.
+Foundation} setzt SQLAlchemy für einen Großteil ihrer Infrastruktur ein.
 
 Ein ebenfalls in der Linux-Community angesiedeltes Projekt ist
 \href{http://screenshots.debian.net/}{screenshots.debian.net}, wo Debian
@@ -53,9 +53,9 @@ In der \href{http://www.php.net}{PHP}-Welt ist
 zuvor beschriebenen ORMs ist es bei Propel notwendig, die Datenbankstruktur in
 einer XML-Datei zu definieren. Anhand dieser XML-Datei kann danach mit dem
 Script \texttt{propel-gen} der PHP-Code für die Objektmodelle generiert werden.
-Ein weiteres Feature von \texttt{propel-gen} ist das Generieren einer SQL-Datei
-die zum Erstellen der in der XML-Datei definierten Tabellen genutzt werden kann
-- alternativ kann man den erzeugten SQL-Code auch direkt ausführen lassen statt
+Ein weiteres Feature von \texttt{propel-gen} ist das Generieren einer SQL-Datei,
+die zum Erstellen der in der XML-Datei definierten Tabellen genutzt werden kann.
+Alternativ kann man den erzeugten SQL-Code auch direkt ausführen lassen statt
 ihn in eine Datei zu schreiben.
 
 Das wohl bekannteste ORM ist \href{http://www.hibernate.org/}{Hibernate} für
@@ -71,26 +71,26 @@ Stringform schreiben zu müssen.
 
 SQLAlchemy bietet sowohl Entwicklern, die noch nicht viel mit Datenbanken zu tun
 hatten, als auch erfahrenen Datenbankentwicklern, die SQL als zweite
-Muttersprache bezeichnen können eine komfortable objektrelationale
+Muttersprache bezeichnen können, eine komfortable objektrelationale
 Datenbankschnittstelle.
 
 Durch die Tatsache, dass zur Datenbankdefinition keine XML-Dateien mit einer
-erst zu lernenden Struktur benötigt werden sondern ganz normaler Python-Code
+erst zu lernenden Struktur benötigt werden, sondern ganz normaler Python-Code
 geschrieben werden kann, hat man sich auch schnell in SQLAlchemy eingearbeitet.
 
-Wenn man ein bereits existierendes Projekt auf SQLAlchemy umstellen will ist
-auch dies ohne Weiteres möglich, da man keinen generierten Code, der sich evtl.
-über viele einzelne Dateien erstreckt, hat sondern nur eine einzelne Datei mit
-den Datenbankdefinitionen (oder auch mehrere Dateien sofern man die Definitionen
+Wenn man ein bereits existierendes Projekt auf SQLAlchemy umstellen will, ist
+auch dies ohne weiteres möglich, da man keinen generierten Code hat, der sich evtl.
+über viele einzelne Dateien erstreckt, sondern nur eine einzelne Datei mit
+den Datenbankdefinitionen (oder auch mehrere Dateien, sofern man die Definitionen
 einer großen Datenbank auf mehrere Dateien verteilen möchte) hinzufügen und
 einbinden muss und dann sofort eine vollständige ORM-Unterstützung hat. Dank der
-Möglichkeit, komplett handgeschriebene SQL-Statements abzuschicken kann man auch
-ohne Weiteres die bereits vorhandenen Datenbankabfragen über SQLAlchemy laufen
+Möglichkeit, komplett handgeschriebene SQL-Statements abzuschicken, kann man auch
+ohne weiteres die bereits vorhandenen Datenbankabfragen über SQLAlchemy laufen
 lassen und sie schrittweise auf ORM umstellen.
 
 Kurz gesagt, SQLAlchemy ist ein komfortables ORM-System und wenn man mit Python
-arbeitet und nicht gerade schon durch Django ein anderes ORM benutzt ist es auf
-jeden Fall einen Blick wert - ob man letzendlich ORM nutzen will oder nicht muss
+arbeitet und nicht gerade schon durch Django ein anderes ORM benutzt, ist es auf
+jeden Fall einen Blick wert. Ob man letztendlich ORM nutzen will oder nicht muss
 man dann für sich selbst entscheiden. Allerdings ist die Zeitersparnis
 insbesondere bei CRUD\footnote{\textbf{C}reate \textbf{R}ead \textbf{U}pdate
 \textbf{D}elete}-Standardaufgaben enorm.
