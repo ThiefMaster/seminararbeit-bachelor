@@ -1,12 +1,12 @@
 \chapter{SQLAlchemy - praktische Nutzung}
 
-Die derzeit noch in Entwicklung befindliche neue Version der Websites des
+Die sich derzeit noch in Entwicklung befindliche neue Version der Website des
 \href{http://www.gamesurge.net}{GameSurge IRC-Netzes} verwendet eine angepasste
 Version des \href{https://github.com/gmr/tinman}{Tinman-Frameworks}, welches auf
 dem \href{http://www.tornadoweb.org/}{Tornado-Framework/Webserver} von Facebook
 basiert. Die wichtigste Anpassung bei Tinman betrifft den SQLAlchemy-Code des
-Datenbankmoduls, der standardmäßig immer \texttt{autocommit} benutzt, was wie in
-\autoref{sqlalchemy-orm} erwähnt problematisch sein kann. In der angepassten
+Datenbankmoduls, der standardmäßig immer \texttt{autocommit} benutzt, was, wie in
+\autoref{sqlalchemy-orm} erwähnt, problematisch sein kann. In der angepassten
 Version kann \texttt{autocommit} per Configdatei deaktiviert werden, was auch
 notwendig ist, damit die Website korrekt funktioniert.
 
@@ -25,11 +25,11 @@ $2^{32}$}-Adressen effizient speichern kann und IP-spezifische Operationen wie
 eine Suche nach IPs innerhalb eines gewissen Subnetzes unterstützt.
 Der Parameter \texttt{server\_default} der Spalte \texttt{request\_time} gibt
 an, dass beim Erstellen der Tabelle ein serverseitiger Defaultwert angegeben
-wird, der durch die SQL-Funktion \texttt{current\_timestamp()} erzeugut wird.
+wird, der durch die SQL-Funktion \texttt{current\_timestamp()} erzeugt wird.
 Das zum Erstellen der Tabelle generierte SQL enthält also \texttt{DEFAULT
 current\_timestamp()}. Alternativ zum \texttt{server\_default}-Parameter gäbe es
 auch \texttt{default}. Diese Option würde der Spalte in der Datenbank keinen
-Defaultwert zuweisen sondern ihn explizit im \texttt{INSERT}-Statement setzen.
+Defaultwert zuweisen, sondern ihn explizit im \texttt{INSERT}-Statement setzen.
 
 \lstinputlisting[language=Python,label=lst:gs-model-trustrequest,
 caption=TrustRequest-Tabellendefinition]{code/gs-model-trustrequest.py}
@@ -87,7 +87,7 @@ von \texttt{relationship()} realisiert. \\
 \texttt{language} als Index benutzt werden soll. \\
 Zusätzlich wurde mit
 \texttt{cascade='all, delete, delete-orphan'} festgelegt, dass "verwaiste"
-Übersetzungen, d.h. Übersetzungen deren Original-News gelöscht wurde, ebenfalls
+Übersetzungen, d.h. Übersetzungen, deren Original-News gelöscht wurde, ebenfalls
 gelöscht werden. Der Fremdschlüssel übernimmt dies dank
 \texttt{ondelete='CASCADE'} zwar bereits, allerdings würde SQLAlchemy ohne
 die Kaskadierung versuchen, die \texttt{newsid} der \texttt{NewsTranslation} auf
