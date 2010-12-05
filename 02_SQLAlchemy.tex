@@ -4,52 +4,52 @@
 
 SQLAlchemy\footnote{\href{http://www.sqlalchemy.org}{http://www.sqlalchemy.org}}
 ist nicht nur ein ORM-System sondern eine Datenbankabstraktionsebene die auch
-ORM kann - man kann es auch problemlos nutzen ohne auch nur ein einziges Objekt
+ORM kann - man kann es problemlos nutzen ohne auch nur ein einziges Objekt
 zu mappen.
 
 Das Framework besteht aus mehreren Modulen. Sie lassen sich grob in
 \textbf{Dialects}, \textbf{Core} und \textbf{ORM} unterteilen.
 
-Das \textbf{Dialects}-Modul ist dafür zuständig, auf die verschiedenen
+Das \textbf{Dialects}-Modul ist dafür zuständig auf die verschiedenen
 Datenbanksysteme zuzugreifen - eine vollständige Liste der Datenbanksysteme und
 der verschiedenen APIs (für MSSQL\footnote{Microsoft SQL Server} gibt es
 beispielsweise 5 verschiedene APIs) findet man in der
 SQLAlchemy-Dokumentation\footnote{\href
 {http://www.sqlalchemy.org/docs/core/engines.html\#supported-dbapis}
 {http://www.sqlalchemy.org/docs/core/engines.html\#supported-dbapis}}.
-Er abstrahiert also den Zugriff auf die
+Es abstrahiert also den Zugriff auf die
 verschiedenen Datenbanken vollständig, sodass anders als bei Pythons BB-API
 abgesehen von den Verbindungsdaten keine unterschiedlichen Funktionsparameter
 notwendig sind. Eine weitere Aufgabe des \emph{Dialects}-Moduls ist die
-Abstraktion der Spaltentypen - die meisten Datenbanksystemen haben zusätzliche
-Typen die nicht standardisiert sind; so hat PostgreSQL beispielsweise den
+Abstraktion der Spaltentypen - die meisten Datenbanksysteme haben zusätzliche
+Typen, die nicht standardisiert sind; so hat PostgreSQL beispielsweise den
 \emph{INET}-Datentyp um IP-Adressen zu speichern - dieser wird durch
 \texttt{postgresql.INET} aus \texttt{sqlalchemy.dialects} repräsentiert.
 
 Das \textbf{Core}-Modul enthält alle nicht-ORM-bezogenen Funktionen von
 SQLAlchemy. Dazu gehört insbesondere die \emph{SQL Expression Language}, die dem
-Entwickler ermöglicht, SQL zu erzeugen ohne selbst SQL zu schreiben, indem sie
+Entwickler ermöglicht SQL zu erzeugen, ohne selbst SQL zu schreiben, indem sie
 die Bestandteile von SQL durch datenbanksystemunabhängige Python-Konstrukte
 repräsentiert. Dabei ist es sowohl möglich, nur die Python-Konstrukte zu
 benutzen oder einen String mit einer SQL-Abfrage zu übergeben, als auch beides
 zu kombinieren. Die beiden letzteren Methoden sind allerdings u.U. nicht mehr
-mit allen Datenbanksystemen kompatibel da man nicht ausschließlich die
-Abstraktion benutzt sondern (teilweise) selbst SQL-Abfragen schreibt. Ein
+mit allen Datenbanksystemen kompatibel, da man nicht ausschließlich die
+Abstraktion benutzt, sondern teilweise selbst SQL-Abfragen schreibt. Ein
 weiterer wichtiger Teil vom \emph{Core} ist der Verbindungsaufbau anhand eines
 Connectionstrings, der alle benötigten Daten einschließlich Datenbanksystem und
 -API enthält. Ebenfalls vom \emph{Core} zur Verfügung gestellt wird der
-Connection-Pool, der bereits aufgebaute Datenbankverbindungen enthält sodass
-eine Applikation schnell an eine Verbindung kommt ohne erst eine neue Verbindung
-aufbauen zu müssen, was je nach Datenbanksystem ein relativ "teurer" Prozess
+Connection-Pool, der bereits aufgebaute Datenbankverbindungen enthält, sodass
+eine Anwendung schnell an eine Verbindung kommt ohne erst eine neue Verbindung
+aufbauen zu müssen, was je nach Datenbanksystem ein relativ teurer Prozess
 ist.
 
 Das dritte und wichtigste Modul ist das \textbf{ORM}-Modul. Im Gegensatz zum
-Lowlevel-Zugriff den die \emph{SQL Expression Language} bietet ist das ORM auf
+Lowlevel-Zugriff, den die \emph{SQL Expression Language} bietet, ist das ORM auf
 einer hohen Ebene angesiedelt und bietet eine starke Abstraktion. Dazu bietet es
 verschiedene Möglichkeiten, Datenbanktabellen und Objekte miteinander zu
-verbinden - zum einen den \emph{mapper} umd zum anderen die \emph{declarative
+verbinden - zum einen den \emph{mapper} und zum anderen die \emph{declarative
 syntax}. Ebenfalls im \emph{ORM}-Modul enthalten ist die
-\emph{\texttt{relationship()} API}, mit der man Relationen zwischen mehreren
+\emph{\texttt{relationship()}-API}, mit der man Relationen zwischen mehreren
 Tabellen mappen kann.
 
 
@@ -81,8 +81,8 @@ books.author\_id $\rightarrow$ authors.id\\
 tags2books.tag\_id $\rightarrow$ tags.id\\
 tags2books.author\_id $\rightarrow$ authors.id
 
-Bei den Primärschlüsseln in \emph{authors}, \emph{books} und \emph{tags} sollen
-darüberhinaus automatisch generierte IDs benutzt werden.
+Für die Primärschlüssel in den Tabellen \emph{authors}, \emph{books} und
+\emph{tags} sollen darüberhinaus automatisch generierte IDs benutzt werden.
 
 \bild{database.pdf}{0.75\textwidth}{Datenbankmodell}{Datenbankmodell}
 
@@ -115,8 +115,8 @@ definiert. Bei diesen Klassen handelt es sich um POPOs\footnote{Plain Old Python
 Objects}, die nur von \texttt{object} erben und auch keine anderen Bedingungen
 erfüllen müssen - eine komplett leere Klasse reicht bereits aus. Zum Testen und
 Debuggen ist es jedoch sinnvoll, die \texttt{\_\_repr\_\_}-Methode zu
-implementieren, sodass \texttt{print instanz\_der\_klasse} brauchbare
-Informationen anstelle der Speicheradresse ausgibt. Im Beispielcode werden dazu
+implementieren, sodass \texttt{print instanz\_der\_klasse} anstelle der
+Speicheradresse brauchbare Informationen ausgibt. Im Beispielcode werden dazu
 einfach der Klassename und sowohl die ID als auch die aussagekräftigste Spalte
 (Name, Titel, Tagname) verwendet. In einem realen Projekt wäre es darüberhinaus
 sinnvoll einen Konstruktor zu erstellen, der häufig genutzten Feldern einen Wert
@@ -125,25 +125,26 @@ zuweist, sodass man z.B. \texttt{jquery\_tag = Tag('jquery')} schreiben kann.
 \lstinputlisting[language=Python,label=lst:dbdef-mapper-classes,firstline=32,
 lastline=43,caption=Definition der Klassen]{code/sqlalchemy-def-mapper.py}
 
-Nachdem Tabellen und Klassen definiert sind müssen sie miteinander verknüpft
-werden - bisher sind die Klassen relativ nutzlos.
+Bisher sind die Klassen aber noch relativ nutzlos. Nachdem die Tabellen und
+Klassen definiert sind, müssen sie noch miteinander verknüpft werden.
 \autoref{lst:dbdef-mapper-mapping} zeigt den dafür notwendigen Code. Die
 \texttt{mapper()}-Funktion nimmt als Argumente als erstes die zu mappende Klasse
 und als zweites die dazugehörige Tabelle. Relationen zwischen Tabellen werden
 über den \texttt{properties}-Parameter und die \texttt{relationship()}-Funktion
 definiert. Diese Funktion benötigt als ersten Parameter das Ziel der Relation.
-Um auch vom Zielobjekt aus auf die Relation zugreifen zu können kann man über
+Um auch vom Zielobjekt aus auf die Relation zugreifen zu können, kann man über
 den \texttt{backref}-Parameter den Feldnamen angeben, unter dem sie dort
 verfügbar sein soll. Sofern man die \emph{backref} konfigurieren will, gibt
 man statt eines Strings den Rückgabewert der \texttt{backref()}-Funktion an, die
 als ersten Parameter den Feldnamen und danach diverse Konfigurationsparameter
 erwartet. Der wohl wichtigste Parameter sowohl von \texttt{relationship()} als
 auch \texttt{backref()} ist \texttt{lazy}: Er gibt an, zu welchem Zeitpunkt die
-Daten der Relation geladen werden sollen. Standard ist \texttt{True}, was
-bedeutet, dass eine SQL-Abfrage abgeschickt wird sobald auf die Relation
-zugegriffen wird. Wenn man \texttt{lazy=False} setzt wird die Query, die die
-Daten des Objektes selbst lädt, um einen \emph{JOIN} erweitert, sodass beim
-Zugriff auf die Relation keine weitere Abfrage mehr notwendig ist - im Beispiel
+Daten der Relation geladen werden sollen. Standardmäßig wird eine SQL-Abfrage
+abgeschickt, sobald auf die Relation zugegriffen wird. In diesem Fall hat
+\texttt{lazy} also den Wert \texttt{True}. Wenn man \texttt{lazy=False} setzt
+wird die Query, die die Daten aus der vom Objekt repräsentierten Tabelle lädt,
+um einen \emph{JOIN} erweitert, sodass beim Zugriff auf die Relation keine weitere
+Abfrage mehr notwendig ist - im Beispiel
 wurde \texttt{Tag.books} auf \emph{eager loading} (\texttt{lazy=False}) gesetzt,
 da es anzunehmen ist, dass man nicht nur ein Tag laden will sondern auch die
 Bücher, die dieses Tag haben. Der letzte wichtige Parameter ist
@@ -162,17 +163,17 @@ Die grundlegenden Methoden sind bei der deklarativen Syntax mit denen der
 \texttt{relationship()} und Spalten mit \texttt{Column()} definiert, was man in
 \autoref{lst:dbdef-decl} leicht erkennt.
 Allerdings sind weder \texttt{mapper()}-Aufrufe noch reine Tabellendefinitionen
-notwendig - man definiert einfach eine Klasse, die von der durch
+notwendig: Man definiert einfach eine Klasse, die von der durch
 \texttt{declarative\_base()} erzeugten Klasse erbt und Felder mit den
 Spaltennamen enthält. im \texttt{Column()}-Aufruf fällt der Spaltenname dafür
 weg, da er ja schon durch den Feldnamen angegeben wurde. Der Tabellenname in der
-Datenbank wird mit dem "magischen" Feld \texttt{\_\_tablename\_\_} angegeben;
-desweiteren können Parameter, die normalerweise an \texttt{mapper()} übergeben
+Datenbank wird mit dem "magischen" Feld \texttt{\_\_tablename\_\_} angegeben.
+Desweiteren können Parameter, die normalerweise an \texttt{mapper()} übergeben
 würden, mit \texttt{\_\_mapper\_args\_\_} festgelegt werden.
 Da bei Relationen u.U. die referenzierte Klasse bzw. Tabelle noch nicht definiert
-wurde ist es auch möglich, ihren Namen als String zu übergeben - dadurch ist es
-möglich, im Beispielcode in der Deklaration von \emph{Book} schon die
-\emph{Tag}-Klasse und die \emph{tags2books}-Tabelle zu referenzieren obwohl sie
+wurde ist es auch möglich, ihren Namen als String zu übergeben. Dadurch ist es
+möglich im Beispielcode in der Deklaration von \emph{Book} schon die
+\emph{Tag}-Klasse und die \emph{tags2books}-Tabelle zu referenzieren, obwohl sie
 noch nicht definiert wurden.
 Ein arbeitssparendes Feature der deklarativen Syntax ist der Konstruktor, den
 jede Klasse erhält: Er weist jedes übergebene \textit{keyword argument} dem
@@ -199,7 +200,7 @@ angegeben, die auch bei anderen URLs - z.B. bei Weblinks - üblich ist: \\
 \texttt{dialect://user:password@host/dbname[?key=value..]} \\
 Der \texttt{echo=True}-Parameter von \texttt{create\_engine()} gibt an, dass
 jegliche SQL-Abfragen auf \emph{stdout} ausgegeben werden, was insbesondere bei
-der Entwicklung nützlich ist, um beispielsweise erkennen zu können ob man
+der Entwicklung nützlich ist, um beispielsweise erkennen zu können, ob man
 durch Relationen mit \emph{lazy loading} zusätzliche Abfragen verursacht.
 Nachdem \emph{metadata} nun eine \emph{engine} besitzt, können die definierten
 Tabellen mit \texttt{metadata.create\_all()} erstellt werden.
@@ -209,7 +210,7 @@ Datenbank]{code/sqlalchemy-engine-bind.py}
 
 \subsection{Zugriff via ORM}\label{sqlalchemy-orm}
 
-Um per ORM auf die Datenbank zugreifen zu können, ist nicht nur die
+Um per ORM auf die Datenbank zugreifen zu können ist nicht nur die
 Datenbankverbindung in Form einer \emph{engine} notwendig, sondern auch eine
 \emph{session}. Die dazu notwendige Klasse wird mit der Funktion
 \texttt{sessionmaker()} erstellt, die als Parameter die \emph{engine} erwartet.
@@ -220,7 +221,7 @@ wird, sodass man Änderungen mit \texttt{session.commit()} bestätigen bzw. mit
 \texttt{session.rollback()} rückgängig machen muss. Es ist nicht zu empfehlen,
 \texttt{autocommit} zu aktivieren, da man dann nach Änderungen an einem Objekt
 nicht erwarten kann, dass diese sofort in der Datenbank persistiert werden.
-Die kann problematisch sein, wenn eine Applikation direkt nach einer Änderung
+Dies kann problematisch sein, wenn eine Anwendung direkt nach einer Änderung
 ein externes Programm aufruft, welches ebenfalls auf die Datenbank zugreift
 und die geänderten Daten benutzen soll.
 
@@ -252,7 +253,7 @@ auch verändert werden. Um nun noch ein Tag \emph{javascript} zu erstellen und e
 mit dem neuen Buch zu verknüpfen, könnte man es einfach der
 \texttt{jsbook.tags}-Liste hinzufügen. Allerdings ist es auch umgekehrt möglich,
 indem man das Buch der \texttt{books}-Liste des neuen Tags hinzufügt. Obwohl die
-Tag-Instanz nirgends zugewiesen wurde wird sie durch die Relation
+Tag-Instanz nirgends zugewiesen wurde, wird sie durch die Relation
 \texttt{Tag.books} und die dazugehörige \texttt{Book.tags}-Relation mit dem Buch
 verknüpft und daher korrekt persistiert.
 
@@ -262,15 +263,13 @@ Objekten]{code/sqlalchemy-orm-add.py}
 Das Löschen von Objekten geschieht wie auch das Hinzufügen über die
 \texttt{delete()}-Methode der Session. Allerdings sollte man dazu logischerweise ein
 bereits persistiertes Objekt haben. Da man normalerweise keine Objekte löschen
-will die man gerade erst erstellt hat und es ineffizient wäre, ein Objekt aus
-der Datenbank zu \texttt{SELECT}en nur um es zu löschen, hat das
+will, die man gerade erst erstellt hat, und es ineffizient wäre, ein Objekt aus
+der Datenbank zu \texttt{SELECT}en um es gleich darauf wieder zu löschen, hat das
 \texttt{Query}-Objekt ebenfalls eine \texttt{delete()}-Methode, sodass man auch
 ohne eine Instanz eines gemappten Objektes Daten löschen kann.
 
 Die wichtigste Operation bei einer Datenbank ist das Auslesen und Verändern von
-Daten - schließlich würde es nicht viel bringen, Daten in einer Datenbank
-abzulegen, wenn man sie nicht mehr auslesen oder verändern könnte. Zum Auslesen
-von Daten benötigt man das im letzten Absatz bereits erwähnte
+Daten. Zum Auslesen von Daten benötigt man das im letzten Absatz bereits erwähnte
 \texttt{Query}-Objekt. Um eine Instanz dazu bekommen, benutzt man die Methode
 \texttt{session.query()} und übergibt ihr als Parameter die Mapping-Klassen, aus
 deren Tabellen man Daten abrufen will. Dieses Objekt kann nun durch Filter,
@@ -294,7 +293,7 @@ gefundene Zeile zurück oder wirft eine \texttt{NoResultFound} bzw.
 \texttt{MultipleResultsFound}-Exception.
 
 \item \texttt{.get(key)} verhält sich wie \texttt{.first()}, fügt allerdings
-zuvor einen Filter hinzu sodass nur die Zeile abgerufen wird, deren
+zuvor einen Filter hinzu, sodass nur die Zeile abgerufen wird, deren
 Primärschlüssel \texttt{key} entspricht.
 
 \item \texttt{.count()} führt eine \texttt{SELECT COUNT}-Query aus und gibt die
@@ -304,7 +303,7 @@ Anzahl der gefundenen Zeilen zurück.
 Anzahl der gelöschten Zeilen zurück.
 
 \item \texttt{.update(values)} führt eine \texttt{UPDATE}-Query aus;
-\texttt{values} ist dabei ein \texttt{dict} welches die zu aktualisierenden
+\texttt{values} ist dabei ein \texttt{dict}, welches die zu aktualisierenden
 Felder als \emph{Key} und Werte bzw. SQL-Ausdrücke als \emph{Value} enthält.
 Zurückgegeben wird die Anzahl der veränderten Zeilen.
 \end{itemize}
@@ -313,8 +312,8 @@ Allerdings will man in den wenigsten Fällen eine Operation auf alle Datensätze
 anwenden. Daher wird man meistens die schon angesprochenen Modifikatoren
 benutzen, bevor man die Query ausführt. Die Modifier haben ein generatives
 Interface, d.h. jede Modifier-Funktion gibt ein neues \texttt{Query}-Object
-zurück, welches eine Kopie das ursprünglichen Objekts ist, die allerdings um die
-Optionen bzw. Kriterien des Modifiers erweitert wurde.
+zurück, welches eine Kopie des ursprünglichen Objekts ist, allerdings um die
+Optionen bzw. Kriterien des Modifiers erweitert.
 
 \begin{itemize}
 \item Der einfachste Modifier ist \texttt{distinct()}. Er fügt der Query einfach
@@ -360,10 +359,10 @@ Eine Alternative zu \texttt{\&} und \texttt{|} sind die Funktionen
 \texttt{AND} bzw. \texttt{OR}. Da man seine Ausdrücke dadurch allerdings in
 Polnischer Notation\footnote{Schreibweise für Ausdrücke, in der die Operanden
 nach dem Operator kommen.} schreibt, senkt diese Variante die Lesbarkeit des
-Codes. Daher ist es im Allgemeinen sinnvoller, die überladenen Operatoren zu
-benutzen und sauber zu Klammern.
+Codes. Daher ist es im Allgemeinen sinnvoller die überladenen Operatoren zu
+benutzen und sauber zu klammern.
 
-Wenn die Filter auf der obersten Ebene nur aus Konjunktionen bestehen kann man
+Wenn die Filter auf der obersten Ebene nur aus Konjunktionen bestehen, kann man
 sie auch einfach auf mehrere \texttt{filter()}-Aufrufe verteilen - wie schon bei
 \texttt{filter\_by{}} werden die neuen Filter mit den alten per \texttt{AND}
 verknüpft.
@@ -386,14 +385,14 @@ Zeilananzahl.
 \item Insbesondere in Verbindung mit dem \texttt{limit()}-Modifier will man
 oftmals auch eine gewisse Anzahl an Zeilen überspringen - beispielsweise um
 seitenweise durch eine große Menge Datensätze navigieren zu können. Dazu benutzt
-man den \texttt{offset()}-Modifier und übergibt ihm die Anzahl der zu
-überspringenden Zeilen als Parameter.
+man den \texttt{offset()}-Modifier und übergibt ihm als Parameter die Anzahl der
+zu überspringenden Zeilen.
 
 
 \item Um die Datensätze bereits datenbankseitig zu sortieren gibt es den
 \texttt{order\_by()}-Modifier. Er akzeptiert genau wie \texttt{filter()} ein
 \emph{clause construct}, allerdings übergibt man normalerweise nur eine oder
-mehrere Spalten in der in der Form \texttt{Obj.col} bzw. \texttt{Obj.col.desc()}
+mehrere Spalten in der Form \texttt{Obj.col} bzw. \texttt{Obj.col.desc()},
 wenn man absteigend sortieren will.
 
 
@@ -402,12 +401,12 @@ ist \texttt{options()}, mit dem man verschiedene Mapper-Optionen festlegen kann.
 Dazu gehören insbesondere die Optionen \texttt{joinedload()} bzw.
 \texttt{joinedload\_all()} und \texttt{lazyload()}, die für die übergebenen
 Relationen die jeweilige Ladestrategie einstellen. \texttt{joinedload\_all()}
-aktiviert die Strategie für alle übergebenen Relationen; die normale Funktion nur
-die letzte übergebene Relation - die vorherigen sind in diesem Fall dazu notwendig,
-um den "Pfad" zur zu konfigurierenden Relation anzugeben.
+aktiviert die Strategie für alle übergebenen Relationen; die normale Funktion
+aktiviert sie nur für die letzte übergebene Relation - die vorherigen sind in
+diesem Fall dazu notwendig,um den "Pfad" zur zu konfigurierenden Relation anzugeben.
 
 \item Wenn man anhand einer Spalte aus einer Relation filtern möchte, so muss
-man die Relation explizit joinen. Dazu dient der \texttt{join()}-Modifier dem
+man die Relation explizit joinen. Dazu dient der \texttt{join()}-Modifier, dem
 man als Parameter entweder den Namen der Relation als String oder das Feld im
 Mappingobjekt in der Form \texttt{Obj.col} übergibt.
 
@@ -419,8 +418,8 @@ sowohl \texttt{Author.books} als auch \texttt{Book.tags} nicht für
 \emph{eager-loading} konfiguriert wurde, muss dies per \texttt{options()} im
 \texttt{Query}-Objekt gemacht werden. Desweiteren wird mittels
 \texttt{filter\_by()} nur ein bestimmer Autor ausgelesen. Da im Beispielcode
-angeonmmen wird, dass der Autor immer existiert, wird die Query mit
-\texttt{one()} gestartet, sodass es eine Exception gegeben würde, wenn dem nicht
+angenommen wird, dass der Autor immer existiert, wird die Query mit
+\texttt{one()} gestartet, sodass es eine Exception geben würde, wenn dem nicht
 so wäre.
 
 \lstinputlisting[language=Python,label=lst:orm-select,caption=Abrufen von
@@ -437,7 +436,7 @@ müssen - wie bereits in \autoref{lst:orm-select} \emph{eager-loading} für die
 bezieht - allerdings könnte man auch \texttt{filter\_by(tag='jquery')} nutzen,
 da der Bezeichner \texttt{tag} eindeutig ist. Da es durchaus mehrere Bücher mit
 einem bestimmten Tag geben kann, wird nun per Iterator auf die Query zugegriffen
-und jedes gefundene Buch und seine Tags ausggeben.
+und jedes gefundene Buch und seine Tags ausgegeben.
 
 \lstinputlisting[language=Python,label=lst:orm-select-join,caption=Filtern von
 Daten anhand einer Relation]{code/sqlalchemy-orm-select-join.py}
@@ -446,7 +445,7 @@ Um Daten zu verändern, benötigt man die dazugehörige Instanz des
 Mapping-Objekts. Dort kann man einfach die Felder ändern. Bei Relationen sind
 die Felder Listen, d.h. man kann nicht nur eine neue Liste zuweisen sondern auch
 einzelne Elemente hinzufügen/löschen. Wie auch bei allen anderen Veränderungen
-an der Datenbank ist es hier notwendig, am Ende \texttt{session.commit()}
+an der Datenbank ist es hier am Ende notwendig \texttt{session.commit()}
 auszuführen, um sie zu bestätigen. Alternativ kann man sie natürlich auch mit
 \texttt{session.rollback()} rückgängig machen.
 
@@ -486,7 +485,7 @@ Liste der Quelltabellen angeben. Bei einfachen \texttt{JOIN}s hat die Liste
 normalerweise nur ein Element, welches man mittels
 \texttt{table.join(table2).join(table3)} erzeugt. Die \texttt{ON}-Bedingungen
 der Joins werden dabei automatisch anhand der definierten Fremdschlüssel
-gebildet. Wenn man andere Bedingungen möchte kann man diese allerdings auch als
+gebildet. Wenn man andere Bedingungen möchte, kann man diese allerdings auch als
 zusätzlichen Parameter an \texttt{join()} übergeben.
 
 \item \texttt{table.insert()} erzeugt ein \texttt{INSERT}-Statement. Um es
@@ -497,31 +496,31 @@ auch eine Liste übergeben, die für jede Zeile ein \texttt{dict} mit den
 Spaltenwerten enthält.
 
 \item \texttt{table.update()} verhält sich ähnlich wie \texttt{table.insert()}
-mit dem Unterschied, dass es ein \texttt{UPDATE}-Statement erzeugt welches eine
+mit dem Unterschied, dass es ein \texttt{UPDATE}-Statement erzeugt, welches eine
 \texttt{where()}-Methode hat um nur ausgewählte Zeilen zu verändern.
 
 \item \texttt{table.delete()} erzeugt ein \texttt{DELETE}-Statement. Um nicht
 alle Zeilen zu löschen sollte man mit der \texttt{where()}-Methode des
-Statements einen Filter angeben bevor man es mit \texttt{execute()} ausführt.
+Statements einen Filter angeben, bevor man es mit \texttt{execute()} ausführt.
 \end{itemize}
 
 \autoref{lst:low-insert} zeigt gut, wie aufwändig eine einfache Operation -
 einen Autor und ein Buch mit einem bereits existierenden Tag anzulegen - ohne
-ORM ist. Dieselbe Operation ließe sich mit vier Zeilen ORM-Code realisieren der
-quasi genauso effizient aber sehr viel lesbarer wäre.
+ORM ist. Dieselbe Operation ließe sich mit vier Zeilen ORM-Code realisieren, der
+fast genauso effizient aber sehr viel lesbarer wäre.
 Beim Einfügen einer Zeile wird ein \texttt{ResultProxy} zurückgegeben, aus dem
 man die ID in Form eines Primärschlüssel-Tupels erhält - obwohl der
-Primärschlüssel nur aus einer einzigen Spalte besteht muss man ihn manuell aus
+Primärschlüssel nur aus einer einzigen Spalte besteht, muss man ihn manuell aus
 dem Tupel extrahieren. Beim Auslesen der Tag-ID müssen die Spalten nun mit ihrem
 vollen Namen referenziert werden; es reicht nicht mehr aus, nur den Spaltennamen
-anzugeben. Da wir auf einer sehr niedrigen Ebene arbeiten bietet SQLAlchemy nun
+anzugeben. Da wir auf einer sehr niedrigen Ebene arbeiten, bietet SQLAlchemy nun
 auch keine Möglichkeit an, Tag und Buch automatisch zu verknüpfen - auch dazu
 muss manuell ein SQL-Statement ausgeführt werden.
 
 \lstinputlisting[language=Python,label=lst:low-insert,caption=Einf\"ugen von
 Daten ohne ORM]{code/sqlalchemy-low-insert.py}
 
-Der Code in \autoref{lst:low-select} liest wie sein ORM-Pendant in in
+Der Code in \autoref{lst:low-select} liest wie sein ORM-Pendant in
 \autoref{lst:orm-select-join} alle Bücher mit einem bestimmten Tag aus. Da man
 außer den Fremdschlüsseln keine Relationen hat muss man manuell angeben, wie
 Bücher und Tags miteinander verknüpft werden - allerdings hilft SQLAlchemy
@@ -540,17 +539,17 @@ Oftmals muss man mit einer bereits vorhandenen Datenbank arbeiten, die entweder
 mit einem anderen ORM wie z.B. Hibernate oder Propel oder aber manuell erstellt
 wurde. Je nach Tabellenanzahl ist es in diesem Fall z.T. sehr aufwändig, eine
 SQLAlchemy-kompatible Datenbankdefinition zu erstellen; insbesondere wenn man
-die bestehende Software nicht auf SQLAlchemy umstellen will sondern nur auf die
+die bestehende Software nicht auf SQLAlchemy umstellen will, sondern nur auf die
 Datenbank davon zugreifen will. Für solche Fälle gibt es die
 \emph{SqlSoup}-Extension. Diese liest die Datenbankstruktur einschließlich
-Fremdschlüsseln mittels Reflection aus und generiert daraus Mapping-Klassen die
+Fremdschlüsseln mittels Reflection aus und generiert daraus Mapping-Klassen, die
 einen sehr einfachen Zugriff auf die Datenbank ermöglichen - allerdings wird in
-der Dokumentation von \emph{SqlSoup} explizit darauf hingewisen dass man außer
-für sehr triviale Aufgaben das "richtige" ORM-System anstelle von \emph{SqlSoup}
+der Dokumentation von \emph{SqlSoup} explizit darauf hingewisen, dass man, außer
+für sehr triviale Aufgaben, das "richtige" ORM-System anstelle von \emph{SqlSoup}
 benutzen soll. Insbesondere in Kommandozeilenprogrammen und Webanwendungen, wo
 je nach Framework der gesamte Code regelmäßig ausgeführt werden muss, ist zu
-bedenken dass \emph{SqlSoup} sehr viele Abfragen benötigt, um die
-Datenbankstruktur herauszufinden während SQLAlchemy bei einer sauberen
+bedenken, dass \emph{SqlSoup} sehr viele Abfragen benötigt, um die
+Datenbankstruktur herauszufinden, während SQLAlchemy bei einer vollständigen
 Definition bereits alle benötigten Informationen hat und keine Datenbankzugriffe
 dafür notwendig sind.
 
@@ -568,25 +567,25 @@ liegen.
 von SqlSoup]{code/sqlsoup-init.py}
 
 Wie \autoref{lst:sqlsoup-select} zeigt, geschieht das Auslesen von Daten mittels
-SqlSoup geschieht analog zum Auslesen via SQLAlchemy/ORM. Der einzige
+SqlSoup analog zum Auslesen via SQLAlchemy/ORM. Der einzige
 Unterschied ist, dass man nicht \texttt{session.query()} sondern
 \texttt{db.table} als Query-Objekt nutzt. An der Modifier-Syntax und dem Zugriff
-auf die Daten ändert sich nichts - abgesehen von der anderen Parametersyntax die
+auf die Daten ändert sich nichts - abgesehen von der anderen Parametersyntax, die
 aber nur daher kommt, dass die Mapping-Klassen nicht mehr global definiert sind
 sondern innerhalb vom \texttt{SqlSoup}-Objekt \texttt{db} liegen.
 
 \lstinputlisting[language=Python,label=lst:sqlsoup-select,caption=Auslesen von
 Daten mit SqlSoup]{code/sqlsoup-select.py}
 
-Zum Modifizieren und Löschen von Daten benutzt man wie auch schon im regulären
-SQLAlchemy normalerweise Instanzen der Mapping-Objekte. Allerdings benutzt man
+Zum Modifizieren und Löschen von Daten benutzt man, wie auch schon im regulären
+SQLAlchemy, normalerweise Instanzen der Mapping-Objekte. Allerdings benutzt man
 statt \texttt{session.delete()} nun \texttt{db.delete()} und auch die
 Transaktionsfunktionen \texttt{commit()} und \texttt{rollback()} werden in
 SqlSoup über das von \texttt{SqlSoup()} erstellte \texttt{db}-Objekt ausgeführt.
 
 Die Syntax zum Persistieren neuer Objekte unterscheidet sich von der bereits
-bekannten insofern, dass man kein neues Objekt erstellt und dieses dann mittels
-\texttt{session.add()} der Datenbank hinzufügt sondern
+bekannten insofern, als dass man kein neues Objekt erstellt und dieses dann mittels
+\texttt{session.add()} der Datenbank hinzufügt, sondern
 \texttt{db.table.insert()} nutzt und dieser Methode die Spaltenwerte als
 \textit{keyword arguments} übergibt. \autoref{lst:sqlsoup-ins-del} nutzt diese
 Methode, um einen neuen Autoren anzulegen, der danach allerdings sofort wieder
