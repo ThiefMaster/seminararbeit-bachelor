@@ -5,7 +5,7 @@
 Unter objektrelationaler Abbildung
 (engl. \textbf{o}bject-\textbf{r}elational \textbf{m}apping)
 versteht man eine Technik, mit der man in einer objektorientierten
-Programmiersprache Objekte in einer relationalen Datenbank ablegen kann und
+Programmiersprache Objekte in einer relationalen Datenbank ablegen und
 später wieder darauf zugreifen kann. Dazu ist es normalerweise nicht
 notwendig, Details über die tatsächliche Datenbankstruktur zu kennen oder gar
 selbst SQL\footnote{\emph{Structured Query Language}, eine standardisierte
@@ -25,19 +25,19 @@ Wie fast jede Technik hat natürlich auch ORM Vor- und Nachteile.
 
 Der sicherlich größte Vorteil ist, dass sich der Programmierer viel Arbeit
 spart. Er muss weder SQL-Abfragen noch Kapselfunktionen für häufig genutzte
-Abfragen schreiben sondern kann einfach mit den meistens sowieso schon
+Abfragen schreiben, sondern kann einfach mit den meistens sowieso schon
 vorhandenen Klassen/Objekten arbeiten. Allerdings hat diese Einfachheit auch
 ihren Preis: Während einfache Abfragen von ORM-Systemen ohne Probleme in
 performantes SQL umgesetzt werden, welches sich größtenteils nicht von dem
 unterscheidet, das ein fähiger Entwickler ansonsten manuell schreiben würde,
-so ist es gut möglich dass komplexe Abfragen, die sich über mehrere Tabellen
+so ist es gut möglich, dass komplexe Abfragen, die sich über mehrere Tabellen
 erstrecken, Aggregationsoperationen enthalten, usw., zwar korrekt ausgeführt
-werden, allerdings nicht sehr performant sind. Allerdings bieten ORM-Systeme
+werden, allerdings nicht sehr performant sind. Jedoch bieten ORM-Systeme
 für solche Fälle normalerweise eine Möglichkeit an, sowohl Metadaten anzugeben -
 entweder beim Erstellen der Abfrage oder schon in der Definition der
 Datenbankstruktur - welche die SQL-Generierung (positiv) beeinflussen können als
 auch SQL-Abfragen händisch zu schreiben oder zumindest mit einer speziellen
-Syntax genau anzugeben wie die SQL-Abfrage generiert werden soll, sodass man
+Syntax genau anzugeben, wie die SQL-Abfrage generiert werden soll, sodass man
 das objektrelationale Mapping hat und trotzdem performantes/hochoptimiertes SQL
 nutzen kann.
 
@@ -45,27 +45,27 @@ Ein gutes Beispiel dazu ist \emph{lazy-loading} von Relationen: Angenommen man
 hat eine Tabelle, die Autoren enthält, und eine weitere Tabelle, die Bücher
 enthält. Diese beiden Tabellen seien über eine Fremdschlüsselbeziehung
 miteinander verbunden, sodass ein Buch immer einem Autor zugeordnet ist.
-Nun lässt man das ORM-System einen bestimmten Autoren aus der Datenbank
+Nun lässt man das ORM-System einen bestimmten Autor aus der Datenbank
 laden. Wenn \emph{lazy-loading} benutzt wird, hat der Autor zwar ein Feld
 \emph{Bücher}, allerdings werden seine Bücher erst in dem Moment aus der
 Datenbank ausgelesen, wo man lesend auf das Feld zugreift. Dies hat den Vorteil,
 dass - wenn man nur den Autor benötigt - keine unnötigen Daten ausgelesen
-werden. Wenn man nun aber sowohl den Autor als auch seine Bücher benötigt werden
+werden. Wenn man nun aber sowohl den Autor als auch seine Bücher benötigt, werden
 insgesamt zwei SQL-Abfragen ausgeführt: Zuerst wird auf die Autorentabelle
 zugegriffen, dann auf die Büchertabelle. Dasselbe ließe sich allerdings auch in
 einer einzelnen Abfrage mittels eines JOINs realisieren - da das ORM-System
-allerdings nicht wissen kann, dass auch die Daten aus der referenzierten Tabelle
-benötigt, muss man ihm explizit mitteilen, dass es Relationen nicht \emph{lazy}
+allerdings nicht wissen kann, dass man auch die Daten aus der referenzierten Tabelle
+benötigt, muss man ihm explizit mitteilen, dass es Relationen nicht \emph{lazy},
 sondern \emph{eager} laden soll.
 
-Ein anderer klarer Vorteil eines ORM-Systems ist dass man sich um SQL Injection
-\footnote{Ausnutzung einer Sicherheitslücke die entsteht, wenn ein regulärer
+Ein anderer klarer Vorteil eines ORM-Systems ist, dass man sich um SQL Injection
+\footnote{Ausnutzung einer Sicherheitslücke, die entsteht, wenn ein regulärer
 Benutzer SQL-Abfragen so manipulieren kann, dass sie nicht die gewünsche
 Funktion haben sondern eine, die dem Benutzer ungewollte Vorteile verschafft
 oder Daten zerstört - siehe auch \autoref{img.exploits-of-a-mom.png}.} keine
 Gedanken machen muss: Wenn das ORM-System Abfragen
-generiert benutzt es entweder eine Datenbank-API bei der Benutzerdaten und
-SQL-Abfrage separat übertragen werden oder aber es escaped Sonderzeichen in den
+generiert, benutzt es entweder eine Datenbank-API, bei der Benutzerdaten und
+SQL-Abfrage separat übertragen werden, oder aber es escaped Sonderzeichen in den
 Benutzerdaten, die die SQL-Abfrage verändern würden.
 
 \bild{exploits-of-a-mom.png}{\textwidth}{SQL Injection (von
@@ -74,10 +74,10 @@ Benutzerdaten, die die SQL-Abfrage verändern würden.
 Ein weiterer Punkt, der sowohl Vor- als auch Nachteil ist, ist die zusätzliche
 Ebene zwischen dem eigentlichen Programm und der Datenbank (bzw. dem
 Datenbank-Client). Der klare Vorteil davon ist, dass die Datenbank (sofern man
-nur generiertes SQL nutzt und keine datenbankspezifischen Features nutzt) ohne
+nur generiertes SQL und keine datenbankspezifischen Features nutzt) ohne
 viel Aufwand durch eine andere ersetzt werden kann. Der Nachteil ist, dass durch
-die zusätzliche Schicht ein Overhead ensteht wo man von Fall zu Fall entscheiden
-muss ob er vertretbar ist oder nicht.
+die zusätzliche Schicht ein Overhead ensteht, wo man von Fall zu Fall entscheiden
+muss, ob er vertretbar ist oder nicht.
 
 
 
@@ -87,7 +87,7 @@ Python selbst hat bereits eine
 Datenbank-API\footnote{\href{http://www.python.org/dev/peps/pep-0249/}{Python
 Database API Specification 2.0}} um eine vom Datenbanksystem unabhängige
 Zugriffsmöglichkeit auf Datenbanken zu bieten.
-Allerdings dient diese API nur dem Zugriff auf die Datenbank sodass man selbst
+Allerdings dient diese API nur dem Zugriff auf die Datenbank, sodass man selbst
 dafür verantwortlich ist, mit der genutzten Datenbank kompatibles SQL zu
 schreiben.
 
@@ -102,12 +102,12 @@ ist, die Funktionsparameter jedoch nicht: Während \emph{psycopg}
 DB-API]{code/python-dbapi.py}
 
 Wenn man allerdings sowieso nur ein einziges Datenbanksystem benutzt und auch
-nicht viele Datenbankoperationen benötigt ist die DB-API jedoch oft ausreichend:
+nicht viele Datenbankoperationen benötigt, ist die DB-API jedoch oft ausreichend:
 Simple SQL-Abfragen sind schnell geschrieben und jeder, der den Code liest,
-sieht sofort was er macht. Darüberhinaus muss man sich um SQL-Injection keine
+erkennt leicht, was er macht. Darüberhinaus muss man sich um SQL-Injection keine
 Gedanken machen, da Query und Parameter separat angegeben werden. Allerdings
-besteht das Risiko dass gerade Programmierer, die die DB-API zum ersten Mal
-benutzen die in \autoref{lst:dbapi-injection} gezeigten Fehler begehen und
+besteht das Risiko, dass gerade Programmierer, die die DB-API zum ersten Mal
+benutzen, die in \autoref{lst:dbapi-injection} gezeigten Fehler begehen und
 dadurch SQL-Injection ermöglichen.
 
 \lstinputlisting[language=Python,label=lst:dbapi-injection,caption=Fehlerhafte
